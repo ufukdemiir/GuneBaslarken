@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Güne Başlarken - Günlük Odak ve Zaman Planlayıcı</title>
-    <!-- Dinamik SVG Favicon eklendi -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+    <!-- Yenilenmiş Modern SVG Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%232563eb'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
 
     <!-- SEO & Privacy-First Meta Etiketleri -->
     <meta name="description" content="Yerel odaklı, gizlilik esaslı, 24 saatlik akışı ve odak noktalarını yönetmeyi sağlayan minimalist günlük planlayıcı.">
@@ -57,7 +57,7 @@
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.5); }
 
-        .dragging { opacity: 0.5; transform: scale(0.98); }
+        .dragging { opacity: 0.4; transform: scale(0.98); }
         .drag-over { background-color: rgba(59, 130, 246, 0.1); border-color: #3b82f6; }
     </style>
 </head>
@@ -67,8 +67,13 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             
             <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-                    G
+                <!-- Şık Vektörel Logo -->
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="9" class="opacity-30" stroke="currentColor"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3"/>
+                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                    </svg>
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight leading-none">Güne Başlarken</h1>
@@ -251,8 +256,8 @@
             <h3 class="text-lg font-bold mb-4">4 Adımda Güne Başlarken</h3>
             <ol class="space-y-3 text-sm text-gray-600 dark:text-gray-300 mb-6">
                 <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">1</span><span><strong>Odak Ekle:</strong> Sol alandan günün ana görevlerini ve renklerini belirle.</span></li>
-                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">2</span><span><strong>Zamana Sürükle:</strong> Odak kartlarını orta kolondaki 24 saatlik çizelgeye sürükle. Sürüklediğin görevin altından tutup çekerek süresini uzatabilirsin.</span></li>
-                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">3</span><span><strong>Akışa Katıl:</strong> Zaman iğnesi göreve geldiğinde Pomodoro otomatik senkronize olur.</span></li>
+                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">2</span><span><strong>Zamana Sürükle & Taşı:</strong> Görevleri çizelgeye sürükle. Çizelge içindeki görevleri de tutup başka saatlere taşıyabilirsin.</span></li>
+                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">3</span><span><strong>Süre Ayarla:</strong> Görevlerin alt şeridinden çekerek sürelerini 15'er dakika uzatıp kısaltabilirsin.</span></li>
                 <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">4</span><span><strong>Günü Kapat:</strong> Akşam "Günü Kapat" butonuna basarak zihnini sıfırla.</span></li>
             </ol>
             <button onclick="toggleHelpModal(false)" class="w-full py-2 bg-blue-600 text-white rounded-xl text-sm font-medium">Anlaşıldı</button>
@@ -517,7 +522,28 @@
             const quarterIndex = Math.floor(offsetY / SLOT_HEIGHT_PX);
             const startMinutes = (hour * 60) + (quarterIndex * 15);
 
-            const newBlock = { id: 'b_' + Date.now(), title: item.title || item.text, color: item.color || '#3b82f6', startMin: startMinutes, durationMin: 30, completed: false };
+            // Çizelge içindeki bir bloğu taşıyorsak
+            if (item.type === 'timeline_block') {
+                const block = state.timelineBlocks.find(b => b.id === item.id);
+                if (block) {
+                    block.startMin = startMinutes;
+                    pushOverlappingBlocks(block);
+                    saveToStorage();
+                    renderTimelineBlocks();
+                    updateTimeNeedleAndStatus();
+                }
+                return;
+            }
+
+            // Yeni eklenen görevler
+            const newBlock = { 
+                id: 'b_' + Date.now(), 
+                title: item.title || item.text, 
+                color: item.color || '#3b82f6', 
+                startMin: startMinutes, 
+                durationMin: 30, 
+                completed: false 
+            };
             pushOverlappingBlocks(newBlock);
             state.timelineBlocks.push(newBlock);
             saveToStorage();
@@ -544,29 +570,60 @@
                 const el = document.createElement('div');
                 const topPx = (block.startMin / 15) * SLOT_HEIGHT_PX;
                 const heightPx = (block.durationMin / 15) * SLOT_HEIGHT_PX;
+                const isShort = block.durationMin <= 15;
+
+                // Görevin çizelge içinde sürüklenebilmesini sağlayan ayarlar
+                el.draggable = true;
+                el.ondragstart = (e) => {
+                    if (isResizing) { e.preventDefault(); return; }
+                    e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'timeline_block', id: block.id }));
+                    el.classList.add('dragging');
+                };
+                el.ondragend = () => el.classList.remove('dragging');
                 
-                el.className = `timeline-block absolute left-14 right-2 rounded-xl p-2 text-xs shadow-sm flex flex-col justify-between border transition-all z-10 cursor-pointer ${block.completed ? 'block-completed bg-gray-100 dark:bg-slate-800 text-gray-400 border-gray-200' : 'block-waiting text-white'}`;
+                el.dataset.id = block.id;
                 el.style.top = `${topPx}px`;
                 el.style.height = `${heightPx}px`;
                 el.style.backgroundColor = block.completed ? '' : block.color;
-                el.dataset.id = block.id;
 
-                el.innerHTML = `
-                    <div class="flex items-center justify-between font-medium">
-                        <span class="truncate">${escapeHtml(block.title)}</span>
-                        <div class="flex items-center space-x-1">
+                if (isShort) {
+                    // 15 Dakikalık dar alan için kompakt tek satırlı düzen
+                    el.className = `timeline-block absolute left-14 right-2 rounded-lg px-2 text-[11px] shadow-sm flex items-center justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-100 dark:bg-slate-800 text-gray-400 border-gray-200' : 'block-waiting text-white'}`;
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-1.5 overflow-hidden pr-1">
+                            <span class="font-semibold truncate">${escapeHtml(block.title)}</span>
+                            <span class="text-[9px] font-mono opacity-80 shrink-0">(${minToTimeStr(block.startMin)})</span>
+                        </div>
+                        <div class="flex items-center space-x-1 shrink-0">
                             <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 transition">${block.completed ? '✓' : '◯'}</button>
                             <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-300">✕</button>
                         </div>
-                    </div>
-                    <div class="text-[10px] opacity-80 font-mono flex justify-between items-end pb-1 px-1">
-                        <span class="time-text">${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + block.durationMin)}</span>
-                        <span class="duration-text">${block.durationMin} dk</span>
-                    </div>
-                    ${!block.completed ? `<div class="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize opacity-0 hover:opacity-100 bg-black/10 dark:bg-white/20 rounded-b-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
-                `;
+                        ${!block.completed ? `<div class="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-b-lg" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
+                    `;
+                } else {
+                    // 15 Dakikadan büyük görevler için geniş düzen
+                    el.className = `timeline-block absolute left-14 right-2 rounded-xl p-2 text-xs shadow-sm flex flex-col justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-100 dark:bg-slate-800 text-gray-400 border-gray-200' : 'block-waiting text-white'}`;
+                    el.innerHTML = `
+                        <div class="flex items-center justify-between font-medium">
+                            <span class="truncate">${escapeHtml(block.title)}</span>
+                            <div class="flex items-center space-x-1">
+                                <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 transition">${block.completed ? '✓' : '◯'}</button>
+                                <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-300">✕</button>
+                            </div>
+                        </div>
+                        <div class="text-[10px] opacity-80 font-mono flex justify-between items-end pb-0.5 px-0.5">
+                            <span class="time-text">${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + block.durationMin)}</span>
+                            <span class="duration-text">${block.durationMin} dk</span>
+                        </div>
+                        ${!block.completed ? `<div class="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize opacity-0 hover:opacity-100 bg-black/10 dark:bg-white/20 rounded-b-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
+                    `;
+                }
 
-                el.onclick = (e) => { if (e.target.tagName !== 'BUTTON' && !e.target.classList.contains('cursor-ns-resize')) setPomodoroTask(block); };
+                el.onclick = (e) => { 
+                    if (e.target.tagName !== 'BUTTON' && !e.target.classList.contains('cursor-ns-resize')) {
+                        setPomodoroTask(block); 
+                    }
+                };
                 container.appendChild(el);
             });
         }
@@ -582,6 +639,7 @@
             document.addEventListener('mousemove', handleResize);
             document.addEventListener('mouseup', stopResize);
         }
+
         function handleResize(e) {
             if (!isResizing) return;
             const deltaY = e.clientY - resizeStartY;
@@ -595,17 +653,21 @@
                 const domEl = document.querySelector(`.timeline-block[data-id='${resizeBlockId}']`);
                 if(domEl) {
                     domEl.style.height = `${(newDuration / 15) * SLOT_HEIGHT_PX}px`;
-                    domEl.querySelector('.time-text').innerText = `${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + newDuration)}`;
-                    domEl.querySelector('.duration-text').innerText = `${newDuration} dk`;
+                    const timeText = domEl.querySelector('.time-text');
+                    const durationText = domEl.querySelector('.duration-text');
+                    if (timeText) timeText.innerText = `${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + newDuration)}`;
+                    if (durationText) durationText.innerText = `${newDuration} dk`;
                 }
             }
         }
+
         function stopResize(e) {
             if (!isResizing) return;
             isResizing = false;
             document.removeEventListener('mousemove', handleResize);
             document.removeEventListener('mouseup', stopResize);
             saveToStorage();
+            renderTimelineBlocks(); // Blok görünümünü 15dk şablonuna göre tazele
             updateTimeNeedleAndStatus();
         }
 
