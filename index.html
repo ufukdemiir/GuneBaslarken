@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Güne Başlarken - Günlük Odak ve Zaman Planlayıcı</title>
     
-    <!-- Yenilenmiş Modern SVG Favicon -->
+    <!-- Dinamik SVG Favicon -->
     <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%232563eb'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
 
     <meta name="description" content="Yerel odaklı, gizlilik esaslı, yatay zaman çizelgesine sahip minimalist günlük planlayıcı.">
-    <meta name="robots" content="index, follow">
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -77,7 +76,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight leading-none">Güne Başlarken</h1>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">Yatay Etkileşimli Komuta Merkezi</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Gününüzü Sade ve Odaklı Yaşayın</span>
                 </div>
             </div>
 
@@ -120,27 +119,44 @@
 
     <main class="max-w-7xl mx-auto w-full px-6 pt-6 space-y-6 flex-1">
 
-        <!-- ÜST BÖLÜM: DİNAMİK AKTİF ODAK BANNER'I & YATAY ZAMAN ÇİZELGESİ -->
+        <!-- ÜST BÖLÜM: DİNAMİK İSTATİSTİK BANNER'I & YATAY ZAMAN ÇİZELGESİ -->
         <section class="space-y-4">
             
-            <!-- Aktif Görev & Dinamik Renk Durum Çubuğu -->
-            <div id="activeTaskBanner" class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm accent-border accent-glow transition-all duration-500 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center space-x-3">
-                    <div id="statusDot" class="w-3.5 h-3.5 rounded-full accent-bg animate-pulse"></div>
-                    <div>
-                        <div class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Şu Anki Odak</div>
-                        <div id="activeTaskTitle" class="text-base font-bold text-gray-800 dark:text-gray-100">Aktif Görev Yok</div>
+            <!-- Aktif Görev & Detaylı İstatistik Paneli -->
+            <div id="activeTaskBanner" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm accent-border accent-glow transition-all duration-500 space-y-4">
+                
+                <!-- Üst Bilgi Satırı -->
+                <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-700/50">
+                    <div class="flex items-center space-x-3">
+                        <div id="statusDot" class="w-3.5 h-3.5 rounded-full accent-bg animate-pulse"></div>
+                        <div>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">Şu Anki Odak</span>
+                            <h2 id="activeTaskTitle" class="text-base font-bold text-gray-800 dark:text-gray-100">Aktif Görev Bulunmuyor</h2>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">Sıradaki Görev</span>
+                        <span id="nextTaskDisplay" class="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[180px] inline-block">Yok</span>
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-6 text-xs">
-                    <div class="text-right">
-                        <span class="text-gray-400 block text-[10px]">Kalan Süre</span>
+                <!-- 4 Temel İstatistik Kartı Grid Yapısı -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80">
+                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Mevcut Görev İçin Kalan Süre</span>
                         <span id="activeTaskRemaining" class="font-bold text-sm accent-text">--</span>
                     </div>
-                    <div class="text-right border-l border-gray-200 dark:border-slate-700 pl-6">
-                        <span class="text-gray-400 block text-[10px]">Günün İlerlemesi</span>
-                        <span id="dayProgressDisplay" class="font-mono font-bold text-sm text-gray-700 dark:text-gray-200">%0</span>
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80">
+                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Mevcut Görev İlerlemesi</span>
+                        <span id="activeTaskProgress" class="font-bold text-sm text-gray-800 dark:text-gray-200">--</span>
+                    </div>
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80">
+                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Günlük Toplam Görev Süresi</span>
+                        <span id="totalTaskDurationDisplay" class="font-bold text-sm text-gray-800 dark:text-gray-200">0 dk</span>
+                    </div>
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80">
+                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Günlük Görev İlerlemesi</span>
+                        <span id="dailyProgressDisplay" class="font-bold text-sm accent-text">%0</span>
                     </div>
                 </div>
             </div>
@@ -150,9 +166,8 @@
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center space-x-2">
                         <span>Zaman Akışı (24 Saat Yatay)</span>
-                        <span class="text-[10px] bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-normal">Sürükle & Bırak & Büyüt</span>
+                        <span class="text-[10px] bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-normal">SÜRÜKLE & BIRAK & GENİŞLET</span>
                     </span>
-                    <span class="text-xs accent-text font-medium">15 dk Hizalama</span>
                 </div>
 
                 <!-- Kaydırılabilir Yatay Çizelge Alanı -->
@@ -180,7 +195,7 @@
         <!-- ALT BÖLÜM: İKİ SÜTUNLU DÜZEN -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <!-- 1. SÜTUN: Günün Odakları & Şablonlar -->
+            <!-- 1. SÜTUN: Günün Odakları & Gün Şablonları -->
             <div class="space-y-6">
                 <!-- Günün Odakları -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
@@ -231,10 +246,10 @@
             <div class="space-y-6">
                 <!-- Hızlı Notlar -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
-                    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-start justify-between">
-                        <span>Hızlı Notlar</span>
-                        <span class="text-[10px] text-gray-400 font-normal text-right leading-tight max-w-[140px]">Çizelgeye Görev Olarak Sürüklenebilir</span>
-                    </h2>
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Hızlı Notlar</h2>
+                        <span class="text-[10px] text-gray-400 font-normal whitespace-nowrap">Çizelgeye sürüklenebilir</span>
+                    </div>
 
                     <div class="flex space-x-2">
                         <input type="text" id="brainDumpInput" placeholder="Aklına gelen bir görev..." onkeypress="handleBrainDumpKeyPress(event)" class="flex-1 px-3 py-2 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -243,9 +258,9 @@
                     <div id="brainDumpList" class="space-y-2 max-h-[220px] overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- Günü Kapat Ritüeli -->
+                <!-- Günü Kapat -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-3">
-                    <h3 class="text-xs font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Günü Kapat Ritüeli</h3>
+                    <h3 class="text-xs font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Günü Kapat</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Tamamlanan işleri gözden geçirin, zihninizi yarın için hazırlayın.</p>
                     <button onclick="openCloseDayModal()" class="w-full py-3 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm hover:opacity-95 transition">
                         Günü Kapat ✨
@@ -264,7 +279,7 @@
                 <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">1</span><span><strong>Odak Ekle:</strong> Sol taraftan günün ana görevlerini ve renklerini seçip ekle.</span></li>
                 <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">2</span><span><strong>Çizelgeye Sürükle:</strong> Görevleri yatay çizelgedeki başlama saatine sürükle.</span></li>
                 <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">3</span><span><strong>Sağ Kenardan Genişlet:</strong> Görev bloğunun sağ kenarından tutarak süresini 15'er dakika uzat.</span></li>
-                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">4</span><span><strong>Canlı Renk Değişimi:</strong> Aktif görevin saat dilimine gelindiğinde tüm uygulamanın renkleri görevin rengine uyarlanır.</span></li>
+                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">4</span><span><strong>Canlı Renk Değişimi:</strong> Aktif görevin saat dilimine gelindiğinde tüm uygulamanın renkleri görevin rengine bürünür.</span></li>
             </ol>
             <button onclick="toggleHelpModal(false)" class="w-full py-2 bg-blue-600 text-white rounded-xl text-sm font-medium">Anlaşıldı</button>
         </div>
@@ -284,13 +299,13 @@
     </div>
 
     <div id="bookmarkTip" class="fixed bottom-6 right-6 bg-gray-900 text-white dark:bg-slate-800 border border-slate-700 px-4 py-3 rounded-xl shadow-2xl text-xs z-50 hidden flex items-center space-x-3">
-        <span>Sayfayı kaydetmek için <kbd class="px-1.5 py-0.5 bg-slate-700 rounded border border-slate-600">Ctrl + D</kbd> veya <kbd class="px-1.5 py-0.5 bg-slate-700 rounded border border-slate-600">Cmd + D</kbd> basın.</span>
+        <span>Sayfayı yer imlerine kaydederek kolayca ulaşabilmek için <kbd class="px-1.5 py-0.5 bg-slate-700 rounded border border-slate-600">CTRL + D</kbd> veya <kbd class="px-1.5 py-0.5 bg-slate-700 rounded border border-slate-600">Cmd + D</kbd> kısayolunu kullanabilirsiniz.</span>
         <button onclick="hideBookmarkTip()" class="text-gray-400 hover:text-white">✕</button>
     </div>
 
     <!-- JAVASCRIPT MANTIĞI -->
     <script>
-        const SLOT_WIDTH_PX = 32; // Her 15 dakikalık dilim 32px genişliğinde
+        const SLOT_WIDTH_PX = 32; // Her 15 dakikalık dilim 32px
         const TOTAL_SLOTS = 96;   // 24 Saat * 4 = 96 Slot
 
         let state = {
@@ -319,7 +334,7 @@
         });
 
         function saveToStorage() {
-            localStorage.setItem('gb_app_state_v3', JSON.stringify({
+            localStorage.setItem('gb_app_state_v4', JSON.stringify({
                 focuses: state.focuses,
                 timelineBlocks: state.timelineBlocks,
                 brainDump: state.brainDump,
@@ -329,7 +344,7 @@
         }
 
         function loadFromStorage() {
-            const data = localStorage.getItem('gb_app_state_v3');
+            const data = localStorage.getItem('gb_app_state_v4') || localStorage.getItem('gb_app_state_v3');
             if (data) {
                 try {
                     const parsed = JSON.parse(data);
@@ -343,7 +358,7 @@
         }
 
         function initTheme() {
-            if (state.theme === 'dark' || (!('gb_app_state_v3' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            if (state.theme === 'dark' || (!('gb_app_state_v4' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
                 document.getElementById('themeIconSun').classList.remove('hidden');
                 document.getElementById('themeIconMoon').classList.add('hidden');
@@ -374,9 +389,9 @@
             const b = parseInt(hex.substring(4,6), 16) || 235;
             
             document.documentElement.style.setProperty('--active-accent', hexColor);
-            document.documentElement.style.setProperty('--active-accent-light', `rgba(${r}, ${g}, ${b}, 0.2)`);
+            document.documentElement.style.setProperty('--active-accent-light', `rgba(${r}, ${g}, ${b}, 0.18)`);
 
-            // Favicon rengini güncelle
+            // Favicon rengini eş zamanlı güncelle
             const favicon = document.getElementById('favicon');
             if (favicon) {
                 const encodedColor = encodeURIComponent(hexColor);
@@ -439,14 +454,12 @@
             for (let hour = 0; hour < 24; hour++) {
                 const hourFormatted = String(hour).padStart(2, '0') + ':00';
                 
-                // Hour Label
                 const hourLabel = document.createElement('div');
                 hourLabel.className = 'text-[10px] font-mono text-gray-400 border-l border-gray-200 dark:border-slate-700/60 pl-1 flex items-center select-none';
                 hourLabel.style.width = `${SLOT_WIDTH_PX * 4}px`;
                 hourLabel.innerText = hourFormatted;
                 header.appendChild(hourLabel);
 
-                // Grid Lines
                 for (let q = 0; q < 4; q++) {
                     const line = document.createElement('div');
                     line.style.width = `${SLOT_WIDTH_PX}px`;
@@ -541,7 +554,6 @@
                 el.style.backgroundColor = block.completed ? '' : block.color;
 
                 if (isShort) {
-                    // 15 Dakikalık Kompakt Blok
                     el.className = `timeline-block absolute top-1 bottom-1 rounded-xl px-1.5 text-[10px] shadow-sm flex items-center justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-200 dark:bg-slate-800 text-gray-400 border-gray-300' : 'block-waiting text-white'}`;
                     el.innerHTML = `
                         <span class="font-bold truncate pr-1" title="${escapeHtml(block.title)}">${escapeHtml(block.title)}</span>
@@ -549,7 +561,6 @@
                         ${!block.completed ? `<div class="absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-r-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
                     `;
                 } else {
-                    // Geniş Blok
                     el.className = `timeline-block absolute top-1 bottom-1 rounded-xl p-2 text-xs shadow-sm flex flex-col justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-200 dark:bg-slate-800 text-gray-400 border-gray-300' : 'block-waiting text-white'}`;
                     el.innerHTML = `
                         <div class="flex items-center justify-between font-medium">
@@ -632,14 +643,37 @@
             
             // Zaman İğnesi Pozisyonu
             const needle = document.getElementById('timeNeedle');
-            needle.style.left = `${(currentMin / 15) * SLOT_WIDTH_PX}px`;
-
-            // Gün İlerlemesi Hesaplama
-            const dayProgress = Math.round((currentMin / (24 * 60)) * 100);
-            document.getElementById('dayProgressDisplay').innerText = `%${dayProgress}`;
+            if (needle) needle.style.left = `${(currentMin / 15) * SLOT_WIDTH_PX}px`;
 
             let activeBlock = null;
+            let totalDuration = 0;
+            let completedDuration = 0;
+            let nextBlock = null;
+            let minNextStart = Infinity;
 
+            state.timelineBlocks.forEach(block => {
+                const blockEnd = block.startMin + block.durationMin;
+                totalDuration += block.durationMin;
+                
+                if (block.completed) {
+                    completedDuration += block.durationMin;
+                }
+
+                // Aktif görevi tespit et
+                if (!block.completed && currentMin >= block.startMin && currentMin < blockEnd) {
+                    activeBlock = block;
+                }
+
+                // Sıradaki en yakın görevi tespit et
+                if (!block.completed && block.startMin > currentMin) {
+                    if (block.startMin < minNextStart) {
+                        minNextStart = block.startMin;
+                        nextBlock = block;
+                    }
+                }
+            });
+
+            // Blok Sınıflarını Güncelle
             document.querySelectorAll('.timeline-block').forEach(el => {
                 const block = state.timelineBlocks.find(x => x.id === el.dataset.id);
                 if (!block) return;
@@ -649,7 +683,6 @@
                     el.className = el.className.replace(/block-(active|waiting|overdue)/g, '') + ' block-completed';
                 } else if (currentMin >= block.startMin && currentMin < blockEnd) {
                     el.className = el.className.replace(/block-(waiting|completed|overdue)/g, '') + ' block-active';
-                    activeBlock = block;
                 } else if (currentMin >= blockEnd) {
                     el.className = el.className.replace(/block-(waiting|completed|active)/g, '') + ' block-overdue';
                 } else {
@@ -657,15 +690,38 @@
                 }
             });
 
+            // 1. Mevcut Görev İstatistikleri Hesaplama
             if (activeBlock) {
                 document.getElementById('activeTaskTitle').innerText = activeBlock.title;
-                const remaining = (activeBlock.startMin + activeBlock.durationMin) - currentMin;
-                document.getElementById('activeTaskRemaining').innerText = `${remaining} dk`;
+                const remainingMin = (activeBlock.startMin + activeBlock.durationMin) - currentMin;
+                const elapsedMin = currentMin - activeBlock.startMin;
+                const taskProgress = Math.min(100, Math.max(0, Math.round((elapsedMin / activeBlock.durationMin) * 100)));
+
+                document.getElementById('activeTaskRemaining').innerText = `${remainingMin} dk`;
+                document.getElementById('activeTaskProgress').innerText = `%${taskProgress}`;
                 setAppAccentColor(activeBlock.color);
             } else {
                 document.getElementById('activeTaskTitle').innerText = "Aktif Görev Bulunmuyor";
                 document.getElementById('activeTaskRemaining').innerText = "--";
-                setAppAccentColor('#2563eb'); // Varsayılan mavi tema
+                document.getElementById('activeTaskProgress').innerText = "--";
+                setAppAccentColor('#2563eb'); // Varsayılan mavi
+            }
+
+            // 2. Günlük Toplam Görev Süresi Metni
+            const totalHours = Math.floor(totalDuration / 60);
+            const totalMins = totalDuration % 60;
+            const totalFormatted = totalHours > 0 ? `${totalHours} sa ${totalMins} dk` : `${totalMins} dk`;
+            document.getElementById('totalTaskDurationDisplay').innerText = totalFormatted;
+
+            // 3. Günlük Görev İlerlemesi (%)
+            const dailyProgress = totalDuration > 0 ? Math.round((completedDuration / totalDuration) * 100) : 0;
+            document.getElementById('dailyProgressDisplay').innerText = `%${dailyProgress}`;
+
+            // 4. Ek Bilgi: Sıradaki Görev
+            if (nextBlock) {
+                document.getElementById('nextTaskDisplay').innerText = `${minToTimeStr(nextBlock.startMin)} - ${nextBlock.title}`;
+            } else {
+                document.getElementById('nextTaskDisplay').innerText = "Yok";
             }
         }
 
