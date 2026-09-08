@@ -33,7 +33,6 @@
             --active-accent-subtle: rgba(37, 99, 235, 0.08);
             --sat-active: 1;
             --sat-waiting: 0.85;
-            --sat-completed: 0.25;
         }
 
         body {
@@ -50,8 +49,7 @@
 
         .block-active { filter: saturate(var(--sat-active)); border-bottom: 4px solid var(--active-accent); }
         .block-waiting { filter: saturate(var(--sat-waiting)); opacity: 0.9; }
-        .block-completed { filter: saturate(var(--sat-completed)); opacity: 0.4; text-decoration: line-through; }
-        .block-overdue { border-bottom: 4px solid #ef4444; background-color: rgba(239, 68, 68, 0.15) !important; }
+        .block-overdue { border-bottom: 4px solid #ef4444; opacity: 0.75; }
 
         ::-webkit-scrollbar { height: 8px; width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -78,7 +76,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight leading-none">Güne Başlarken</h1>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">Gününüzü Sade ve Odaklı Yaşayın</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Sade ve odaklı bir gün</span>
                 </div>
             </div>
 
@@ -89,7 +87,7 @@
                         <span>%100 Yerel / Gizli</span>
                     </button>
                     <div class="absolute right-0 top-full mt-2 w-64 p-3 bg-gray-900 text-white dark:bg-slate-800 dark:border dark:border-slate-700 text-xs rounded-xl shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
-                        Tüm verileriniz yalnızca tarayıcınızın yerel belleğinde (localStorage) saklanır. Hiçbir sunucuya gönderilmez.
+                        Tüm verileriniz yalnızca tarayıcınızın yerel belleğinde (localStorage) saklanır.
                     </div>
                 </div>
 
@@ -132,46 +130,56 @@
                     <div class="flex items-center space-x-3">
                         <div id="statusDot" class="w-3.5 h-3.5 rounded-full accent-bg animate-pulse"></div>
                         <div>
-                            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">Şu Anki Odak</span>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">Şu Anki Odak Görevi</span>
                             <h2 id="activeTaskTitle" class="text-base font-bold text-gray-800 dark:text-gray-100">Aktif Görev Bulunmuyor</h2>
                         </div>
                     </div>
                     <div class="text-right">
                         <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 block">Sıradaki Görev</span>
-                        <span id="nextTaskDisplay" class="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[180px] inline-block">Yok</span>
+                        <span id="nextTaskDisplay" class="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[200px] inline-block">Yok</span>
                     </div>
                 </div>
 
-                <!-- İstatistik Kartları Grid Yapısı -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80 accent-subtle-bg transition-colors duration-500">
-                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Mevcut Görev İçin Kalan Süre</span>
+                <!-- Uyumlu Metrik Kartları Seti -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-xs">
+                    
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 flex flex-col justify-between accent-subtle-bg transition-colors duration-500">
+                        <span class="text-gray-400 block text-[10px] font-semibold mb-1">Mevcut Görev Kalan Süre</span>
                         <span id="activeTaskRemaining" class="font-bold text-sm accent-text">--</span>
                     </div>
-                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80">
-                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Mevcut Görev İlerlemesi</span>
+
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 flex flex-col justify-between">
+                        <span class="text-gray-400 block text-[10px] font-semibold mb-1">Mevcut Görev İlerlemesi</span>
                         <span id="activeTaskProgress" class="font-bold text-sm text-gray-800 dark:text-gray-200">--</span>
                     </div>
-                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80">
-                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Günlük Toplam Görev Süresi</span>
+
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 flex flex-col justify-between">
+                        <span class="text-gray-400 block text-[10px] font-semibold mb-1">Geçen Görev Süresi</span>
+                        <span id="elapsedTaskDurationDisplay" class="font-bold text-sm text-gray-800 dark:text-gray-200">0 dk</span>
+                    </div>
+
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 flex flex-col justify-between">
+                        <span class="text-gray-400 block text-[10px] font-semibold mb-1">Günlük Toplam Görev Süresi</span>
                         <span id="totalTaskDurationDisplay" class="font-bold text-sm text-gray-800 dark:text-gray-200">0 dk</span>
                     </div>
-                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800/80 accent-subtle-bg transition-colors duration-500">
-                        <span class="text-gray-400 block text-[10px] font-medium mb-0.5">Günlük Toplam Görev İlerlemesi</span>
+
+                    <div class="bg-gray-50/80 dark:bg-slate-900/50 p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 flex flex-col justify-between col-span-2 sm:col-span-1 accent-subtle-bg transition-colors duration-500">
+                        <span class="text-gray-400 block text-[10px] font-semibold mb-1">Günlük Toplam Görev Süresi İlerlemesi</span>
                         <span id="dailyProgressDisplay" class="font-bold text-sm accent-text">%0</span>
                     </div>
+
                 </div>
             </div>
 
             <!-- Yatay Zaman Çizelgesi Kartı -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm flex flex-col space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center space-x-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider flex items-center space-x-2">
                         <span class="accent-text font-bold">●</span>
-                        <span>Zaman Akışı (24 Saat Yatay)</span>
+                        <span class="accent-text font-bold">Zaman Akışı (24 Saat Yatay)</span>
                     </span>
                     <span class="text-[10px] accent-subtle-bg accent-text border accent-border px-2.5 py-0.5 rounded-full font-semibold transition-colors duration-500">
-                        SÜRÜKLE & BIRAK & GENİŞLET
+                        FARE TEKERLEĞİ İLE KAYDIR & GENİŞLET
                     </span>
                 </div>
 
@@ -204,10 +212,8 @@
             <div class="space-y-6">
                 <!-- Günün Odakları -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
-                    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center justify-between">
-                        <span class="flex items-center space-x-1.5">
-                            <span class="accent-text font-bold">Günün Odakları</span>
-                        </span>
+                    <h2 class="text-xs font-semibold uppercase tracking-wider flex items-center justify-between">
+                        <span class="accent-text font-bold">Günün Odakları</span>
                         <span id="focusCount" class="accent-subtle-bg accent-text font-bold text-xs px-2.5 py-0.5 rounded-full transition-colors duration-500">0</span>
                     </h2>
 
@@ -231,7 +237,7 @@
 
                 <!-- Gün Şablonları -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Gün Şablonları</h3>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider accent-text font-bold">Gün Şablonları</h3>
                     <div class="space-y-3">
                         <div class="flex space-x-2">
                             <input type="text" id="templateNameInput" placeholder="Şablon adı..." class="flex-1 px-3 py-1.5 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none">
@@ -241,7 +247,7 @@
                             <label class="text-[11px] text-gray-400 block">Kayıtlı Şablon Yükle:</label>
                             <select id="templateSelect" class="w-full text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-gray-700 dark:text-gray-200 focus:outline-none"></select>
                             <div class="flex space-x-2">
-                                <button onclick="loadSelectedTemplate()" class="flex-1 py-2 bg-gray-800 hover:bg-gray-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs font-medium rounded-xl transition">Şablonu Uygula</button>
+                                <button onclick="loadSelectedTemplate()" class="flex-1 py-2 accent-bg text-white text-xs font-medium rounded-xl transition-all duration-500 hover:opacity-90">Şablonu Uygula</button>
                                 <button onclick="deleteSelectedTemplate()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-950/40 dark:hover:bg-red-900/60 dark:text-red-400 text-xs rounded-xl transition">Sil</button>
                             </div>
                         </div>
@@ -254,8 +260,8 @@
                 <!-- Hızlı Notlar -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Hızlı Notlar</h2>
-                        <span class="text-[10px] text-gray-400 font-normal whitespace-nowrap">Çizelgeye sürüklenebilir</span>
+                        <h2 class="text-xs font-semibold uppercase tracking-wider accent-text font-bold">Hızlı Notlar</h2>
+                        <span class="text-[10px] text-gray-400 font-normal whitespace-nowrap">Çizelgeye sürükle-bırak</span>
                     </div>
 
                     <div class="flex space-x-2">
@@ -267,8 +273,8 @@
 
                 <!-- Günü Kapat -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-3">
-                    <h3 class="text-xs font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Günü Kapat</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Tamamlanan işleri gözden geçirin, zihninizi yarın için hazırlayın.</p>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider accent-text font-bold">Günü Kapat</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Günü tamamlayıp zaman çizelgesini ve odak listenizi bir sonraki gün için sıfırlayın.</p>
                     <button onclick="openCloseDayModal()" class="w-full py-3 accent-bg text-white text-xs font-semibold rounded-xl shadow-sm hover:opacity-95 transition-all duration-500">
                         Günü Kapat
                     </button>
@@ -281,12 +287,12 @@
     <!-- MODALLAR & BİLDİRİMLER -->
     <div id="helpModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-gray-100 dark:border-slate-700">
-            <h3 class="text-lg font-bold mb-4">Kullanım Rehberi</h3>
+            <h3 class="text-lg font-bold mb-4 accent-text">Kullanım Rehberi</h3>
             <ol class="space-y-3 text-sm text-gray-600 dark:text-gray-300 mb-6">
-                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">1</span><span><strong>Odak Ekle:</strong> Sol taraftan günün ana görevlerini ve renklerini seçip ekle.</span></li>
-                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">2</span><span><strong>Çizelgeye Sürükle:</strong> Görevleri yatay çizelgedeki başlama saatine sürükle. Fare tekerleğiyle çizelgeyi kolayca sağa/sola kaydırabilirsin.</span></li>
-                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">3</span><span><strong>Sağ Kenardan Genişlet:</strong> Görev bloğunun sağ kenarından tutarak süresini 15'er dakika uzat.</span></li>
-                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">4</span><span><strong>Canlı Renk Bütünlüğü:</strong> Aktif görevin saat dilimine gelindiğinde sayfanın tüm renkleri ve vurguları o görevin rengine bürünür.</span></li>
+                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">1</span><span><strong>Odak Ekle:</strong> Sol taraftan günün ana görevlerini ve renklerini seçip ekleyin.</span></li>
+                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">2</span><span><strong>Çizelgeye Sürükle:</strong> Görevleri yatay çizelgedeki başlama saatine sürükleyin. Fare tekerleğiyle çizelgeyi kolayca yatayda kaydırabilirsiniz.</span></li>
+                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">3</span><span><strong>Sağ Kenardan Genişlet:</strong> Görev bloğunun sağ kenarından tutarak süresini 15'er dakika uzatın.</span></li>
+                <li class="flex items-start space-x-2"><span class="accent-subtle-bg accent-text font-bold px-2 py-0.5 rounded text-xs">4</span><span><strong>Bütünsel Renk Teması:</strong> Aktif görevin saat dilimine gelindiğinde sayfanın tüm renkleri, butonları ve başlıkları o görevin rengine bürünür.</span></li>
             </ol>
             <button onclick="toggleHelpModal(false)" class="w-full py-2 accent-bg text-white rounded-xl text-sm font-medium">Anlaşıldı</button>
         </div>
@@ -296,23 +302,20 @@
     <div id="closeDayModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-gray-100 dark:border-slate-700 space-y-4">
             <div>
-                <h3 class="text-base font-bold text-gray-800 dark:text-gray-100">Günü Tamamla</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Bugünün genel özetini inceleyin ve yarın için adımınızı seçin.</p>
+                <h3 class="text-base font-bold accent-text">Günü Kapat</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                    Günü kapattığınızda <strong>zaman çizelgesindeki tüm görev blokları</strong> ve <strong>Günün Odakları</strong> listeniz tamamen temizlenecek, bir sonraki gün için tertemiz bir sayfa açılacaktır.
+                </p>
             </div>
 
-            <div id="closeDayStats" class="bg-gray-50 dark:bg-slate-900/60 p-3.5 rounded-xl text-xs space-y-1.5 border border-gray-100 dark:border-slate-800"></div>
+            <div class="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200/60 dark:border-amber-800/50 text-[11px] text-amber-800 dark:text-amber-300">
+                💡 <strong>Bilgi:</strong> Gün Şablonlarınız ve Hızlı Notlarınız bu işlemden etkilenmez ve korunur.
+            </div>
 
-            <div class="space-y-2.5 pt-1">
-                <button onclick="finishDay('carry')" class="w-full text-left p-3.5 accent-subtle-bg accent-border border rounded-xl hover:opacity-90 transition group">
-                    <div class="text-xs font-bold accent-text">Yarım Kalanları Ertesi Güne Aktar ve Çizelgeyi Temizle</div>
-                    <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-snug">Tamamlanmayan tüm görev blokları "Günün Odakları" listesine aktarılır ve zaman akışı yarın için sıfırlanır.</div>
+            <div class="space-y-2 pt-2">
+                <button onclick="finishDay()" class="w-full py-3 accent-bg text-white text-xs font-bold rounded-xl shadow-sm hover:opacity-90 transition duration-500">
+                    Günü Temizle ve Kapat
                 </button>
-
-                <button onclick="finishDay('clear')" class="w-full text-left p-3.5 bg-gray-50 hover:bg-gray-100 dark:bg-slate-900/40 dark:hover:bg-slate-900 border border-gray-200 dark:border-slate-700/80 rounded-xl transition">
-                    <div class="text-xs font-bold text-gray-700 dark:text-gray-300">Tüm Zaman Çizelgesini Sıfırla</div>
-                    <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-snug">Mevcut zaman bloklarının tümü temizlenir, sıfırdan temiz bir sayfa açılır.</div>
-                </button>
-
                 <button onclick="toggleCloseDayModal(false)" class="w-full py-2 text-center text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition">
                     Vazgeç
                 </button>
@@ -321,7 +324,7 @@
     </div>
 
     <div id="bookmarkTip" class="fixed bottom-6 right-6 bg-gray-900 text-white dark:bg-slate-800 border border-slate-700 px-4 py-3 rounded-xl shadow-2xl text-xs z-50 hidden flex items-center space-x-3">
-        <span>Sayfayı yer imlerine kaydederek kolayca ulaşabilmek için <kbd class="px-1.5 py-0.5 bg-slate-700 rounded border border-slate-600">CTRL + D</kbd> veya <kbd class="px-1.5 py-0.5 bg-slate-700 rounded border border-slate-600">Cmd + D</kbd> kısayolunu kullanabilirsiniz.</span>
+        <span>Sayfayı yer imlerine kaydetmek için <kbd class="px-1.5 py-0.5 bg-slate-700 rounded border border-slate-600">CTRL + D</kbd> kısayolunu kullanabilirsiniz.</span>
         <button onclick="hideBookmarkTip()" class="text-gray-400 hover:text-white">✕</button>
     </div>
 
@@ -357,7 +360,7 @@
         });
 
         function saveToStorage() {
-            localStorage.setItem('gb_app_state_v5', JSON.stringify({
+            localStorage.setItem('gb_app_state_v6', JSON.stringify({
                 focuses: state.focuses,
                 timelineBlocks: state.timelineBlocks,
                 brainDump: state.brainDump,
@@ -367,7 +370,7 @@
         }
 
         function loadFromStorage() {
-            const data = localStorage.getItem('gb_app_state_v5') || localStorage.getItem('gb_app_state_v4');
+            const data = localStorage.getItem('gb_app_state_v6') || localStorage.getItem('gb_app_state_v5');
             if (data) {
                 try {
                     const parsed = JSON.parse(data);
@@ -381,7 +384,7 @@
         }
 
         function initTheme() {
-            if (state.theme === 'dark' || (!('gb_app_state_v5' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            if (state.theme === 'dark' || (!('gb_app_state_v6' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
                 document.getElementById('themeIconSun').classList.remove('hidden');
                 document.getElementById('themeIconMoon').classList.add('hidden');
@@ -417,7 +420,7 @@
             }
         }
 
-        // Tüm Sayfada Kapsamlı Dinamik Renk Uyarlaması
+        // Tüm Sayfada Kapsamlı Dinamik Renk Seti Uyarlaması
         function setAppAccentColor(hexColor) {
             if (!hexColor) hexColor = '#2563eb';
             const hex = hexColor.replace('#', '');
@@ -429,12 +432,22 @@
             document.documentElement.style.setProperty('--active-accent-light', `rgba(${r}, ${g}, ${b}, 0.18)`);
             document.documentElement.style.setProperty('--active-accent-subtle', `rgba(${r}, ${g}, ${b}, 0.08)`);
 
-            // Favicon rengini eş zamanlı güncelle
+            // Favicon dinamik renk güncellemesi
             const favicon = document.getElementById('favicon');
             if (favicon) {
                 const encodedColor = encodeURIComponent(hexColor);
                 favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='${encodedColor}'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>`;
             }
+        }
+
+        // Dakikayı Hem Saat Hem Dakika Cinsinden Formatlayan Yardımcı Fonksiyon
+        function formatTimeBoth(mins) {
+            if (mins <= 0) return "0 dk";
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            if (h === 0) return `${m} dk`;
+            if (m === 0) return `${h} sa (${mins} dk)`;
+            return `${h} sa ${m} dk (${mins} dk)`;
         }
 
         function addFocus(e) {
@@ -544,8 +557,7 @@
                 title: item.title || item.text, 
                 color: item.color || state.selectedColor || '#3b82f6', 
                 startMin: startMinutes, 
-                durationMin: 30, 
-                completed: false 
+                durationMin: 30
             };
 
             pushOverlappingBlocks(newBlock);
@@ -589,30 +601,27 @@
                 el.dataset.id = block.id;
                 el.style.left = `${leftPx}px`;
                 el.style.width = `${widthPx}px`;
-                el.style.backgroundColor = block.completed ? '' : block.color;
+                el.style.backgroundColor = block.color;
 
                 if (isShort) {
-                    el.className = `timeline-block absolute top-1 bottom-1 rounded-xl px-1.5 text-[10px] shadow-sm flex items-center justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-200 dark:bg-slate-800 text-gray-400 border-gray-300' : 'block-waiting text-white'}`;
+                    el.className = `timeline-block absolute top-1 bottom-1 rounded-xl px-1.5 text-[10px] shadow-sm flex items-center justify-between border transition-all z-10 cursor-grab active:cursor-grabbing text-white block-waiting`;
                     el.innerHTML = `
                         <span class="font-bold truncate pr-1" title="${escapeHtml(block.title)}">${escapeHtml(block.title)}</span>
-                        <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 shrink-0">${block.completed ? '✓' : '◯'}</button>
-                        ${!block.completed ? `<div class="absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-r-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
+                        <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-200 text-[10px] shrink-0">✕</button>
+                        <div class="absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-r-xl" onmousedown="initResize(event, '${block.id}')"></div>
                     `;
                 } else {
-                    el.className = `timeline-block absolute top-1 bottom-1 rounded-xl p-2 text-xs shadow-sm flex flex-col justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-200 dark:bg-slate-800 text-gray-400 border-gray-300' : 'block-waiting text-white'}`;
+                    el.className = `timeline-block absolute top-1 bottom-1 rounded-xl p-2 text-xs shadow-sm flex flex-col justify-between border transition-all z-10 cursor-grab active:cursor-grabbing text-white block-waiting`;
                     el.innerHTML = `
                         <div class="flex items-center justify-between font-medium">
                             <span class="truncate pr-1">${escapeHtml(block.title)}</span>
-                            <div class="flex items-center space-x-1 shrink-0">
-                                <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 transition">${block.completed ? '✓' : '◯'}</button>
-                                <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-300 text-[10px]">✕</button>
-                            </div>
+                            <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-200 text-[10px]">✕</button>
                         </div>
                         <div class="text-[9px] opacity-85 font-mono flex justify-between items-end">
                             <span class="time-text">${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + block.durationMin)}</span>
                             <span class="duration-text">${block.durationMin} dk</span>
                         </div>
-                        ${!block.completed ? `<div class="absolute right-0 top-0 bottom-0 w-2.5 cursor-ew-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-r-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
+                        <div class="absolute right-0 top-0 bottom-0 w-2.5 cursor-ew-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-r-xl" onmousedown="initResize(event, '${block.id}')"></div>
                     `;
                 }
 
@@ -663,12 +672,6 @@
             updateTimeNeedleAndStatus();
         }
 
-        function toggleBlockComplete(id, e) {
-            e.stopPropagation();
-            const b = state.timelineBlocks.find(x => x.id === id);
-            if (b) { b.completed = !b.completed; saveToStorage(); renderTimelineBlocks(); updateTimeNeedleAndStatus(); }
-        }
-
         function deleteBlock(id, e) {
             e.stopPropagation();
             state.timelineBlocks = state.timelineBlocks.filter(x => x.id !== id);
@@ -685,7 +688,7 @@
 
             let activeBlock = null;
             let totalTaskDuration = 0;
-            let totalElapsedTaskDuration = 0;
+            let elapsedTaskDuration = 0;
             let nextBlock = null;
             let minNextStart = Infinity;
 
@@ -693,20 +696,20 @@
                 const blockEnd = block.startMin + block.durationMin;
                 totalTaskDuration += block.durationMin;
                 
-                // Görev Blokları Üzerinde Geçen Zaman Hesabı (Boş Zamanlar Hariç)
+                // Görev Blokları Üzerinde Geçen Zaman Hesabı (Sadece Blok Süreleri)
                 if (currentMin >= blockEnd) {
-                    totalElapsedTaskDuration += block.durationMin;
+                    elapsedTaskDuration += block.durationMin;
                 } else if (currentMin > block.startMin) {
-                    totalElapsedTaskDuration += (currentMin - block.startMin);
+                    elapsedTaskDuration += (currentMin - block.startMin);
                 }
 
                 // Aktif Görevi Tespit Et
-                if (!block.completed && currentMin >= block.startMin && currentMin < blockEnd) {
+                if (currentMin >= block.startMin && currentMin < blockEnd) {
                     activeBlock = block;
                 }
 
                 // Sıradaki Görevi Tespit Et
-                if (!block.completed && block.startMin > currentMin) {
+                if (block.startMin > currentMin) {
                     if (block.startMin < minNextStart) {
                         minNextStart = block.startMin;
                         nextBlock = block;
@@ -720,25 +723,23 @@
                 if (!block) return;
                 const blockEnd = block.startMin + block.durationMin;
 
-                if (block.completed) {
-                    el.className = el.className.replace(/block-(active|waiting|overdue)/g, '') + ' block-completed';
-                } else if (currentMin >= block.startMin && currentMin < blockEnd) {
-                    el.className = el.className.replace(/block-(waiting|completed|overdue)/g, '') + ' block-active';
+                if (currentMin >= block.startMin && currentMin < blockEnd) {
+                    el.className = el.className.replace(/block-(waiting|overdue)/g, '') + ' block-active';
                 } else if (currentMin >= blockEnd) {
-                    el.className = el.className.replace(/block-(waiting|completed|active)/g, '') + ' block-overdue';
+                    el.className = el.className.replace(/block-(waiting|active)/g, '') + ' block-overdue';
                 } else {
-                    el.className = el.className.replace(/block-(active|completed|overdue)/g, '') + ' block-waiting';
+                    el.className = el.className.replace(/block-(active|overdue)/g, '') + ' block-waiting';
                 }
             });
 
-            // 1. Mevcut Görev İstatistikleri
+            // 1. Mevcut Görev Metrikleri
             if (activeBlock) {
                 document.getElementById('activeTaskTitle').innerText = activeBlock.title;
                 const remainingMin = (activeBlock.startMin + activeBlock.durationMin) - currentMin;
                 const elapsedMin = currentMin - activeBlock.startMin;
                 const taskProgress = Math.min(100, Math.max(0, Math.round((elapsedMin / activeBlock.durationMin) * 100)));
 
-                document.getElementById('activeTaskRemaining').innerText = `${remainingMin} dk`;
+                document.getElementById('activeTaskRemaining').innerText = formatTimeBoth(remainingMin);
                 document.getElementById('activeTaskProgress').innerText = `%${taskProgress}`;
                 setAppAccentColor(activeBlock.color);
             } else {
@@ -748,17 +749,17 @@
                 setAppAccentColor('#2563eb');
             }
 
-            // 2. Günlük Toplam Görev Süresi Metni
-            const totalHours = Math.floor(totalTaskDuration / 60);
-            const totalMins = totalTaskDuration % 60;
-            const totalFormatted = totalHours > 0 ? `${totalHours} sa ${totalMins} dk` : `${totalMins} dk`;
-            document.getElementById('totalTaskDurationDisplay').innerText = totalFormatted;
+            // 2. Geçen Görev Süresi Metriği
+            document.getElementById('elapsedTaskDurationDisplay').innerText = formatTimeBoth(elapsedTaskDuration);
 
-            // 3. Günlük Toplam Görev İlerlemesi (%) - Görev Dışı Zamanlar Hariç
-            const dailyProgress = totalTaskDuration > 0 ? Math.min(100, Math.round((totalElapsedTaskDuration / totalTaskDuration) * 100)) : 0;
+            // 3. Günlük Toplam Görev Süresi Metriği
+            document.getElementById('totalTaskDurationDisplay').innerText = formatTimeBoth(totalTaskDuration);
+
+            // 4. Günlük Toplam Görev Süresi İlerlemesi (%)
+            const dailyProgress = totalTaskDuration > 0 ? Math.min(100, Math.round((elapsedTaskDuration / totalTaskDuration) * 100)) : 0;
             document.getElementById('dailyProgressDisplay').innerText = `%${dailyProgress}`;
 
-            // 4. Sıradaki Görev Bilgisi
+            // 5. Sıradaki Görev Bilgisi
             if (nextBlock) {
                 document.getElementById('nextTaskDisplay').innerText = `${minToTimeStr(nextBlock.startMin)} - ${nextBlock.title}`;
             } else {
@@ -789,7 +790,7 @@
             const select = document.getElementById('templateSelect');
             const t = state.templates.find(x => x.id === select.value);
             if (!t) return;
-            if (confirm(`"${t.name}" şablonunu yüklemek mevcut çizelgenizin üzerine yazacaktır. Onaylıyor musunuz?`)) {
+            if (confirm(`"${t.name}" şablonunu uygulamak mevcut odak görevlerinizi ve zaman çizelgenizi güncelleyecektir. Onaylıyor musunuz?`)) {
                 state.focuses = JSON.parse(JSON.stringify(t.focuses));
                 state.timelineBlocks = JSON.parse(JSON.stringify(t.timelineBlocks));
                 saveToStorage();
@@ -851,26 +852,20 @@
         }
 
         function openCloseDayModal() {
-            const completed = state.timelineBlocks.filter(b => b.completed).length;
-            const total = state.timelineBlocks.length;
-            document.getElementById('closeDayStats').innerHTML = `
-                <div class="flex justify-between text-gray-600 dark:text-gray-300"><span>Planlanan Zaman Bloğu:</span> <strong>${total}</strong></div>
-                <div class="flex justify-between text-emerald-600 dark:text-emerald-400"><span>Tamamlanan Görevler:</span> <strong>${completed}</strong></div>
-                <div class="flex justify-between text-amber-600 dark:text-amber-400"><span>Kalan / Tamamlanmayan:</span> <strong>${total - completed}</strong></div>
-            `;
             toggleCloseDayModal(true);
         }
 
-        function toggleCloseDayModal(show) { document.getElementById('closeDayModal').classList.toggle('hidden', !show); }
+        function toggleCloseDayModal(show) { 
+            document.getElementById('closeDayModal').classList.toggle('hidden', !show); 
+        }
 
-        function finishDay(action) {
-            if (action === 'carry') {
-                state.timelineBlocks.filter(b => !b.completed).forEach(b => {
-                    if (!state.focuses.some(f => f.title === b.title)) state.focuses.push({ id: 'f_' + Date.now(), title: b.title, color: b.color });
-                });
-            }
-            state.timelineBlocks = []; saveToStorage(); renderAll(); toggleCloseDayModal(false);
-            alert("Gününüz tamamlandı, yeni güne hazırız!");
+        function finishDay() {
+            // Zaman Çizelgesi ve Günün Odakları tamamen sıfırlanır
+            state.timelineBlocks = [];
+            state.focuses = [];
+            saveToStorage();
+            renderAll();
+            toggleCloseDayModal(false);
         }
 
         function exportData() {
