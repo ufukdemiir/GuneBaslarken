@@ -4,20 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Güne Başlarken - Günlük Odak ve Zaman Planlayıcı</title>
+    
     <!-- Yenilenmiş Modern SVG Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%232563eb'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
+    <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%232563eb'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
 
-    <!-- SEO & Privacy-First Meta Etiketleri -->
-    <meta name="description" content="Yerel odaklı, gizlilik esaslı, 24 saatlik akışı ve odak noktalarını yönetmeyi sağlayan minimalist günlük planlayıcı.">
-    <meta name="keywords" content="günlük planlayıcı, pomodoro, yerel planlayıcı, odak yönetimi, zaman çizelgesi, hızlı notlar">
+    <meta name="description" content="Yerel odaklı, gizlilik esaslı, yatay zaman çizelgesine sahip minimalist günlük planlayıcı.">
     <meta name="robots" content="index, follow">
-    <meta name="author" content="Güne Başlarken">
-
-    <!-- Open Graph (OG) Etiketleri -->
-    <meta property="og:title" content="Güne Başlarken - Günlük Odak ve Zaman Planlayıcı">
-    <meta property="og:description" content="Verileriniz sadece tarayıcınızda kalır. Sunucusuz, hızlı ve minimalist günlük çalışma komuta merkezi.">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -37,9 +29,11 @@
 
     <style>
         :root {
+            --active-accent: #2563eb;
+            --active-accent-light: rgba(37, 99, 235, 0.15);
             --sat-active: 1;
-            --sat-waiting: 0.6;
-            --sat-completed: 0.2;
+            --sat-waiting: 0.85;
+            --sat-completed: 0.25;
         }
 
         body {
@@ -47,37 +41,43 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
-        .block-active { filter: saturate(var(--sat-active)); border-left: 4px solid #3b82f6; }
-        .block-waiting { filter: saturate(var(--sat-waiting)); opacity: 0.85; }
-        .block-completed { filter: saturate(var(--sat-completed)); opacity: 0.4; text-decoration: line-through; }
-        .block-overdue { border-left: 4px solid #ef4444; background-color: rgba(239, 68, 68, 0.1) !important; }
+        .accent-bg { background-color: var(--active-accent) !important; transition: background-color 0.5s ease; }
+        .accent-border { border-color: var(--active-accent) !important; transition: border-color 0.5s ease; }
+        .accent-text { color: var(--active-accent) !important; transition: color 0.5s ease; }
+        .accent-glow { box-shadow: 0 0 25px var(--active-accent-light); transition: box-shadow 0.5s ease; }
 
-        ::-webkit-scrollbar { width: 6px; }
+        .block-active { filter: saturate(var(--sat-active)); border-bottom: 4px solid var(--active-accent); }
+        .block-waiting { filter: saturate(var(--sat-waiting)); opacity: 0.9; }
+        .block-completed { filter: saturate(var(--sat-completed)); opacity: 0.4; text-decoration: line-through; }
+        .block-overdue { border-bottom: 4px solid #ef4444; background-color: rgba(239, 68, 68, 0.15) !important; }
+
+        ::-webkit-scrollbar { height: 8px; width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.5); }
 
-        .dragging { opacity: 0.4; transform: scale(0.98); }
-        .drag-over { background-color: rgba(59, 130, 246, 0.1); border-color: #3b82f6; }
+        .dragging { opacity: 0.4; transform: scale(0.97); }
+        .drag-over { background-color: var(--active-accent-light); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 dark:bg-slate-900 dark:text-gray-100 min-h-screen flex flex-col select-none">
+<body class="bg-gray-50 text-gray-800 dark:bg-slate-900 dark:text-gray-100 min-h-screen flex flex-col select-none pb-12">
 
+    <!-- ÜST BAŞLIK & DİNAMİK LOGO -->
     <header class="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-gray-200 dark:border-slate-800 px-6 py-3 transition-colors">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             
             <div class="flex items-center space-x-3">
-                <!-- Şık Vektörel Logo -->
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="9" class="opacity-30" stroke="currentColor"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3"/>
-                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                <!-- Favicon ile Birebir Uyumlu Dinamik Logo -->
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md accent-bg transition-all duration-500">
+                    <svg class="w-5 h-5" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="9" fill="none" stroke="white" stroke-width="2" opacity="0.35"/>
+                        <path d="M16 9v7l4 3" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="16" cy="16" r="2" fill="white"/>
                     </svg>
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight leading-none">Güne Başlarken</h1>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">Yerel Günlük Komuta Merkezi</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Yatay Etkileşimli Komuta Merkezi</span>
                 </div>
             </div>
 
@@ -118,147 +118,153 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto w-full px-6 pt-4 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
+    <main class="max-w-7xl mx-auto w-full px-6 pt-6 space-y-6 flex-1">
 
-        <section class="lg:col-span-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] lg:overflow-y-auto space-y-4 pr-1">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm">
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 flex items-center justify-between">
-                    <span>Günün Odakları</span>
-                    <span id="focusCount" class="bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 text-xs px-2 py-0.5 rounded-full">0</span>
-                </h2>
-
-                <form id="focusForm" onsubmit="addFocus(event)" class="space-y-3">
-                    <input type="text" id="focusInput" placeholder="Yeni odak görevi..." required class="w-full px-3 py-2 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                    <div class="flex items-center justify-between pt-1">
-                        <div class="flex items-center space-x-1.5" id="colorPicker">
-                            <button type="button" data-color="#3b82f6" onclick="selectColor('#3b82f6')" class="w-4 h-4 rounded-full bg-blue-500 ring-2 ring-offset-1 ring-blue-500 transition-transform scale-110"></button>
-                            <button type="button" data-color="#f59e0b" onclick="selectColor('#f59e0b')" class="w-4 h-4 rounded-full bg-amber-500 transition-transform"></button>
-                            <button type="button" data-color="#10b981" onclick="selectColor('#10b981')" class="w-4 h-4 rounded-full bg-emerald-500 transition-transform"></button>
-                            <button type="button" data-color="#ec4899" onclick="selectColor('#ec4899')" class="w-4 h-4 rounded-full bg-pink-500 transition-transform"></button>
-                            <button type="button" data-color="#8b5cf6" onclick="selectColor('#8b5cf6')" class="w-4 h-4 rounded-full bg-purple-500 transition-transform"></button>
-                        </div>
-                        <button type="submit" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg shadow-sm transition">+ Ekle</button>
+        <!-- ÜST BÖLÜM: DİNAMİK AKTİF ODAK BANNER'I & YATAY ZAMAN ÇİZELGESİ -->
+        <section class="space-y-4">
+            
+            <!-- Aktif Görev & Dinamik Renk Durum Çubuğu -->
+            <div id="activeTaskBanner" class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm accent-border accent-glow transition-all duration-500 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div id="statusDot" class="w-3.5 h-3.5 rounded-full accent-bg animate-pulse"></div>
+                    <div>
+                        <div class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Şu Anki Odak</div>
+                        <div id="activeTaskTitle" class="text-base font-bold text-gray-800 dark:text-gray-100">Aktif Görev Yok</div>
                     </div>
-                </form>
-            </div>
+                </div>
 
-            <div id="focusList" class="space-y-2 max-h-[220px] overflow-y-auto pr-1"></div>
-
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Gün Şablonları</h3>
-                <div class="space-y-3">
-                    <div class="flex space-x-1.5">
-                        <input type="text" id="templateNameInput" placeholder="Şablon adı..." class="flex-1 px-2.5 py-1.5 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none">
-                        <button onclick="saveTemplate()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition">Kaydet</button>
+                <div class="flex items-center space-x-6 text-xs">
+                    <div class="text-right">
+                        <span class="text-gray-400 block text-[10px]">Kalan Süre</span>
+                        <span id="activeTaskRemaining" class="font-bold text-sm accent-text">--</span>
                     </div>
-                    <div class="space-y-2 pt-1 border-t border-gray-100 dark:border-slate-700/60">
-                        <label class="text-[11px] text-gray-400 block">Kayıtlı Şablon Seçin:</label>
-                        <select id="templateSelect" class="w-full text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2.5 py-2 text-gray-700 dark:text-gray-200 focus:outline-none"></select>
-                        <div class="flex space-x-2">
-                            <button onclick="loadSelectedTemplate()" class="flex-1 py-1.5 bg-gray-800 hover:bg-gray-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs rounded-lg transition">Şablonu Yükle</button>
-                            <button onclick="deleteSelectedTemplate()" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-950/40 dark:hover:bg-red-900/60 dark:text-red-400 text-xs rounded-lg transition">Sil</button>
-                        </div>
+                    <div class="text-right border-l border-gray-200 dark:border-slate-700 pl-6">
+                        <span class="text-gray-400 block text-[10px]">Günün İlerlemesi</span>
+                        <span id="dayProgressDisplay" class="font-mono font-bold text-sm text-gray-700 dark:text-gray-200">%0</span>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <section class="lg:col-span-6 flex flex-col space-y-4 h-[calc(100vh-100px)]">
+            <!-- Yatay Zaman Çizelgesi Kartı -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm flex flex-col space-y-3">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div id="pomoStatusDot" class="w-3 h-3 rounded-full bg-gray-300 dark:bg-slate-600"></div>
-                        <div>
-                            <div id="activeTaskTitle" class="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate max-w-[180px] sm:max-w-[260px]">Aktif Odak Bulunmuyor</div>
-                            <div id="activeTaskRemaining" class="text-xs text-gray-500 dark:text-gray-400">Zaman çizelgesinden bir blok seçin</div>
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center space-x-2">
+                        <span>Zaman Akışı (24 Saat Yatay)</span>
+                        <span class="text-[10px] bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-normal">Sürükle & Bırak & Büyüt</span>
+                    </span>
+                    <span class="text-xs accent-text font-medium">15 dk Hizalama</span>
+                </div>
+
+                <!-- Kaydırılabilir Yatay Çizelge Alanı -->
+                <div id="timelineContainer" class="relative overflow-x-auto overflow-y-hidden border border-gray-100 dark:border-slate-700/60 rounded-xl bg-gray-50/50 dark:bg-slate-900/40 p-2">
+                    <div id="timelineGrid" class="relative h-36 min-w-[3072px] select-none">
+                        
+                        <!-- Saat Başlıkları Satırı -->
+                        <div id="timelineHoursHeader" class="absolute top-0 left-0 right-0 h-7 border-b border-gray-200 dark:border-slate-700/60 flex"></div>
+
+                        <!-- Izgara Çizgileri -->
+                        <div id="timelineGridLines" class="absolute top-7 bottom-0 left-0 right-0 flex pointer-events-none"></div>
+
+                        <!-- Anlık Zaman İğnesi (Kırmızı Dikey Çizgi) -->
+                        <div id="timeNeedle" class="absolute top-0 bottom-0 border-l-2 border-red-500 z-30 pointer-events-none transition-all duration-300 flex flex-col items-center">
+                            <span class="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-b font-mono shadow-sm -mt-0.5">Şimdi</span>
                         </div>
-                    </div>
 
-                    <div class="flex items-center space-x-2">
-                        <div class="flex flex-col items-end mr-2 justify-center">
-                            <span id="pomoRoundDisplay" class="text-[10px] font-bold text-blue-500 dark:text-blue-400 tracking-wider">TUR 1/4</span>
-                            <span id="pomoTimerDisplay" class="text-xl font-mono font-bold text-gray-700 dark:text-gray-200 leading-none mt-0.5">25:00</span>
-                        </div>
-                        <button id="btnPomoStart" onclick="togglePomodoro()" class="p-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition">
-                            <svg id="pomoPlayIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
-                            <svg id="pomoPauseIcon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6"></path></svg>
-                        </button>
-                        <button onclick="resetPomodoro()" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        </button>
-                        <button onclick="togglePomoSettings()" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition" title="Pomodoro Ayarları">⚙️</button>
+                        <!-- Bırakma Alanı / Görev Blokları Konumu -->
+                        <div id="timelineBlocksArea" class="absolute top-9 bottom-1 left-0 right-0 drop-zone"></div>
                     </div>
-                </div>
-
-                <div id="pomoSettingsPanel" class="hidden pt-3 border-t border-gray-100 dark:border-slate-700 grid grid-cols-4 gap-2 text-xs">
-                    <div>
-                        <label class="block text-gray-400 mb-1 truncate">Çalışma (dk)</label>
-                        <input type="number" id="pomoWorkInput" value="25" min="1" max="120" class="w-full p-1.5 bg-gray-50 dark:bg-slate-900 border rounded-lg dark:border-slate-700 text-center">
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 mb-1 truncate">Kısa Mola</label>
-                        <input type="number" id="pomoShortInput" value="5" min="1" max="60" class="w-full p-1.5 bg-gray-50 dark:bg-slate-900 border rounded-lg dark:border-slate-700 text-center">
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 mb-1 truncate">Uzun Mola</label>
-                        <input type="number" id="pomoLongInput" value="15" min="1" max="60" class="w-full p-1.5 bg-gray-50 dark:bg-slate-900 border rounded-lg dark:border-slate-700 text-center">
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 mb-1 truncate">Tur Sayısı</label>
-                        <input type="number" id="pomoRoundsInput" value="4" min="1" max="10" class="w-full p-1.5 bg-gray-50 dark:bg-slate-900 border rounded-lg dark:border-slate-700 text-center">
-                    </div>
-                    <div class="col-span-4">
-                        <button onclick="savePomoSettings()" class="w-full py-1.5 bg-gray-800 hover:bg-gray-900 dark:bg-slate-700 text-white rounded-lg transition mt-1">Ayarları Kaydet</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm flex-1 relative overflow-hidden flex flex-col">
-                <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-700/60 mb-2">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Zaman Akışı (24 Saat)</span>
-                    <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">15 dk Hizalama</span>
-                </div>
-                <div id="timelineContainer" class="relative flex-1 overflow-y-auto pr-2">
-                    <div id="timeNeedle" class="absolute left-12 right-0 border-b-2 border-red-500 z-30 pointer-events-none transition-all duration-300 flex items-center" style="top: 0px;">
-                        <span class="bg-red-500 text-white text-[10px] px-1 rounded-r font-mono -mt-2.5">Şimdi</span>
-                    </div>
-                    <div id="timelineGrid" class="relative space-y-0"></div>
                 </div>
             </div>
         </section>
 
-        <section class="lg:col-span-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] lg:overflow-y-auto space-y-4 pr-1">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm">
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 flex items-start justify-between">
-                    <span>Hızlı Notlar</span>
-                    <span class="text-[10px] text-gray-400 font-normal text-right leading-tight max-w-[120px]">Zaman Çizelgesine Görev Olarak Sürüklenebilir</span>
-                </h2>
+        <!-- ALT BÖLÜM: İKİ SÜTUNLU DÜZEN -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                <div class="flex space-x-2 mb-3">
-                    <input type="text" id="brainDumpInput" placeholder="Aklına takılan bir fikir..." onkeypress="handleBrainDumpKeyPress(event)" class="flex-1 px-3 py-1.5 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="addBrainDump()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs rounded-xl transition">+</button>
+            <!-- 1. SÜTUN: Günün Odakları & Şablonlar -->
+            <div class="space-y-6">
+                <!-- Günün Odakları -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center justify-between">
+                        <span>Günün Odakları</span>
+                        <span id="focusCount" class="bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 text-xs px-2 py-0.5 rounded-full">0</span>
+                    </h2>
+
+                    <form id="focusForm" onsubmit="addFocus(event)" class="space-y-3">
+                        <input type="text" id="focusInput" placeholder="Yeni odak görevi yazın..." required class="w-full px-3 py-2 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1.5" id="colorPicker">
+                                <button type="button" data-color="#3b82f6" onclick="selectColor('#3b82f6')" class="w-4 h-4 rounded-full bg-blue-500 ring-2 ring-offset-1 ring-blue-500 transition-transform scale-110"></button>
+                                <button type="button" data-color="#f59e0b" onclick="selectColor('#f59e0b')" class="w-4 h-4 rounded-full bg-amber-500 transition-transform"></button>
+                                <button type="button" data-color="#10b981" onclick="selectColor('#10b981')" class="w-4 h-4 rounded-full bg-emerald-500 transition-transform"></button>
+                                <button type="button" data-color="#ec4899" onclick="selectColor('#ec4899')" class="w-4 h-4 rounded-full bg-pink-500 transition-transform"></button>
+                                <button type="button" data-color="#8b5cf6" onclick="selectColor('#8b5cf6')" class="w-4 h-4 rounded-full bg-purple-500 transition-transform"></button>
+                                <button type="button" data-color="#ef4444" onclick="selectColor('#ef4444')" class="w-4 h-4 rounded-full bg-red-500 transition-transform"></button>
+                            </div>
+                            <button type="submit" class="px-4 py-1.5 accent-bg text-white text-xs font-medium rounded-lg shadow-sm hover:opacity-90 transition">+ Odak Ekle</button>
+                        </div>
+                    </form>
+
+                    <div id="focusList" class="space-y-2 max-h-[220px] overflow-y-auto pr-1"></div>
                 </div>
-                <div id="brainDumpList" class="space-y-2 max-h-[280px] overflow-y-auto pr-1"></div>
+
+                <!-- Gün Şablonları -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Gün Şablonları</h3>
+                    <div class="space-y-3">
+                        <div class="flex space-x-2">
+                            <input type="text" id="templateNameInput" placeholder="Şablon adı..." class="flex-1 px-3 py-1.5 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none">
+                            <button onclick="saveTemplate()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-900 dark:bg-slate-700 text-white text-xs font-medium rounded-xl transition">Kaydet</button>
+                        </div>
+                        <div class="space-y-2 pt-2 border-t border-gray-100 dark:border-slate-700/60">
+                            <label class="text-[11px] text-gray-400 block">Kayıtlı Şablon Yükle:</label>
+                            <select id="templateSelect" class="w-full text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-gray-700 dark:text-gray-200 focus:outline-none"></select>
+                            <div class="flex space-x-2">
+                                <button onclick="loadSelectedTemplate()" class="flex-1 py-2 bg-gray-800 hover:bg-gray-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs font-medium rounded-xl transition">Şablonu Uygula</button>
+                                <button onclick="deleteSelectedTemplate()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-950/40 dark:hover:bg-red-900/60 dark:text-red-400 text-xs rounded-xl transition">Sil</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700/60 shadow-sm">
-                <h3 class="text-xs font-semibold text-gray-800 dark:text-gray-200 mb-1 uppercase tracking-wider">Günü Kapat Ritüeli</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Tamamlanan işleri arşivleyin, zihninizi sıfırlayın.</p>
-                <button onclick="openCloseDayModal()" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-semibold rounded-xl shadow-sm transition">
-                    Günü Kapat ✨
-                </button>
+            <!-- 2. SÜTUN: Hızlı Notlar & Günü Kapat -->
+            <div class="space-y-6">
+                <!-- Hızlı Notlar -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-4">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-start justify-between">
+                        <span>Hızlı Notlar</span>
+                        <span class="text-[10px] text-gray-400 font-normal text-right leading-tight max-w-[140px]">Çizelgeye Görev Olarak Sürüklenebilir</span>
+                    </h2>
+
+                    <div class="flex space-x-2">
+                        <input type="text" id="brainDumpInput" placeholder="Aklına gelen bir görev..." onkeypress="handleBrainDumpKeyPress(event)" class="flex-1 px-3 py-2 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button onclick="addBrainDump()" class="px-4 py-2 bg-gray-800 hover:bg-gray-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs rounded-xl transition">+</button>
+                    </div>
+                    <div id="brainDumpList" class="space-y-2 max-h-[220px] overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- Günü Kapat Ritüeli -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Günü Kapat Ritüeli</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Tamamlanan işleri gözden geçirin, zihninizi yarın için hazırlayın.</p>
+                    <button onclick="openCloseDayModal()" class="w-full py-3 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm hover:opacity-95 transition">
+                        Günü Kapat ✨
+                    </button>
+                </div>
             </div>
+
         </section>
     </main>
 
+    <!-- MODALLAR & BİLDİRİMLER -->
     <div id="helpModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-gray-100 dark:border-slate-700">
-            <h3 class="text-lg font-bold mb-4">4 Adımda Güne Başlarken</h3>
+            <h3 class="text-lg font-bold mb-4">Kullanım Rehberi</h3>
             <ol class="space-y-3 text-sm text-gray-600 dark:text-gray-300 mb-6">
-                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">1</span><span><strong>Odak Ekle:</strong> Sol alandan günün ana görevlerini ve renklerini belirle.</span></li>
-                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">2</span><span><strong>Zamana Sürükle & Taşı:</strong> Görevleri çizelgeye sürükle. Çizelge içindeki görevleri de tutup başka saatlere taşıyabilirsin.</span></li>
-                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">3</span><span><strong>Süre Ayarla:</strong> Görevlerin alt şeridinden çekerek sürelerini 15'er dakika uzatıp kısaltabilirsin.</span></li>
-                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">4</span><span><strong>Günü Kapat:</strong> Akşam "Günü Kapat" butonuna basarak zihnini sıfırla.</span></li>
+                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">1</span><span><strong>Odak Ekle:</strong> Sol taraftan günün ana görevlerini ve renklerini seçip ekle.</span></li>
+                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">2</span><span><strong>Çizelgeye Sürükle:</strong> Görevleri yatay çizelgedeki başlama saatine sürükle.</span></li>
+                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">3</span><span><strong>Sağ Kenardan Genişlet:</strong> Görev bloğunun sağ kenarından tutarak süresini 15'er dakika uzat.</span></li>
+                <li class="flex items-start space-x-2"><span class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded text-xs">4</span><span><strong>Canlı Renk Değişimi:</strong> Aktif görevin saat dilimine gelindiğinde tüm uygulamanın renkleri görevin rengine uyarlanır.</span></li>
             </ol>
             <button onclick="toggleHelpModal(false)" class="w-full py-2 bg-blue-600 text-white rounded-xl text-sm font-medium">Anlaşıldı</button>
         </div>
@@ -282,42 +288,30 @@
         <button onclick="hideBookmarkTip()" class="text-gray-400 hover:text-white">✕</button>
     </div>
 
+    <!-- JAVASCRIPT MANTIĞI -->
     <script>
-        const START_HOUR = 0;
-        const END_HOUR = 24;
-        const SLOT_HEIGHT_PX = 24; 
-        
+        const SLOT_WIDTH_PX = 32; // Her 15 dakikalık dilim 32px genişliğinde
+        const TOTAL_SLOTS = 96;   // 24 Saat * 4 = 96 Slot
+
         let state = {
             focuses: [],
             timelineBlocks: [],
             brainDump: [],
             templates: [],
             selectedColor: '#3b82f6',
-            theme: 'light',
-            pomodoro: {
-                running: false,
-                timeLeft: 25 * 60,
-                workMin: 25,
-                shortBreakMin: 5,
-                longBreakMin: 15,
-                rounds: 4,
-                currentRound: 1,
-                isWork: true,
-                interval: null,
-                activeBlockId: null
-            }
+            theme: 'light'
         };
 
         // Resize State
         let isResizing = false;
         let resizeBlockId = null;
-        let resizeStartY = 0;
+        let resizeStartX = 0;
         let resizeStartDuration = 0;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadFromStorage();
             initTheme();
-            renderTimelineGrid();
+            buildHorizontalGrid();
             renderAll();
             scrollToCurrentTime();
             setInterval(updateTimeNeedleAndStatus, 10000); 
@@ -325,23 +319,17 @@
         });
 
         function saveToStorage() {
-            localStorage.setItem('gb_app_state_v2', JSON.stringify({
+            localStorage.setItem('gb_app_state_v3', JSON.stringify({
                 focuses: state.focuses,
                 timelineBlocks: state.timelineBlocks,
                 brainDump: state.brainDump,
                 templates: state.templates,
-                theme: state.theme,
-                pomodoroConfig: {
-                    workMin: state.pomodoro.workMin,
-                    shortBreakMin: state.pomodoro.shortBreakMin,
-                    longBreakMin: state.pomodoro.longBreakMin,
-                    rounds: state.pomodoro.rounds
-                }
+                theme: state.theme
             }));
         }
 
         function loadFromStorage() {
-            const data = localStorage.getItem('gb_app_state_v2');
+            const data = localStorage.getItem('gb_app_state_v3');
             if (data) {
                 try {
                     const parsed = JSON.parse(data);
@@ -350,19 +338,12 @@
                     state.brainDump = parsed.brainDump || [];
                     state.templates = parsed.templates || [];
                     state.theme = parsed.theme || 'light';
-                    if (parsed.pomodoroConfig) {
-                        state.pomodoro.workMin = parsed.pomodoroConfig.workMin || 25;
-                        state.pomodoro.shortBreakMin = parsed.pomodoroConfig.shortBreakMin || 5;
-                        state.pomodoro.longBreakMin = parsed.pomodoroConfig.longBreakMin || 15;
-                        state.pomodoro.rounds = parsed.pomodoroConfig.rounds || 4;
-                        state.pomodoro.timeLeft = state.pomodoro.workMin * 60;
-                    }
                 } catch (e) { console.error("Veri yüklenemedi", e); }
             }
         }
 
         function initTheme() {
-            if (state.theme === 'dark' || (!('gb_app_state_v2' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            if (state.theme === 'dark' || (!('gb_app_state_v3' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
                 document.getElementById('themeIconSun').classList.remove('hidden');
                 document.getElementById('themeIconMoon').classList.add('hidden');
@@ -383,6 +364,24 @@
                 if (btn.dataset.color === color) btn.classList.add('ring-2', 'ring-offset-1', 'scale-110');
                 else btn.classList.remove('ring-2', 'ring-offset-1', 'scale-110');
             });
+        }
+
+        function setAppAccentColor(hexColor) {
+            if (!hexColor) hexColor = '#2563eb';
+            const hex = hexColor.replace('#', '');
+            const r = parseInt(hex.substring(0,2), 16) || 37;
+            const g = parseInt(hex.substring(2,4), 16) || 99;
+            const b = parseInt(hex.substring(4,6), 16) || 235;
+            
+            document.documentElement.style.setProperty('--active-accent', hexColor);
+            document.documentElement.style.setProperty('--active-accent-light', `rgba(${r}, ${g}, ${b}, 0.2)`);
+
+            // Favicon rengini güncelle
+            const favicon = document.getElementById('favicon');
+            if (favicon) {
+                const encodedColor = encodeURIComponent(hexColor);
+                favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='${encodedColor}'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>`;
+            }
         }
 
         function addFocus(e) {
@@ -411,8 +410,6 @@
                 el.className = 'p-2.5 rounded-xl border bg-white dark:bg-slate-800 border-gray-100 dark:border-slate-700/80 shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing hover:shadow-md transition';
                 el.draggable = true;
                 el.dataset.id = focus.id;
-                el.dataset.title = focus.title;
-                el.dataset.color = focus.color;
 
                 el.ondragstart = (e) => {
                     e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'focus', ...focus }));
@@ -423,12 +420,261 @@
                 el.innerHTML = `
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${focus.color}"></span>
-                        <span class="text-xs font-medium text-gray-700 dark:text-gray-200 truncate max-w-[140px]">${escapeHtml(focus.title)}</span>
+                        <span class="text-xs font-medium text-gray-700 dark:text-gray-200 truncate max-w-[180px]">${escapeHtml(focus.title)}</span>
                     </div>
                     <button onclick="deleteFocus('${focus.id}')" class="text-gray-400 hover:text-red-500 text-xs px-1">✕</button>
                 `;
                 container.appendChild(el);
             });
+        }
+
+        function buildHorizontalGrid() {
+            const header = document.getElementById('timelineHoursHeader');
+            const gridLines = document.getElementById('timelineGridLines');
+            const blocksArea = document.getElementById('timelineBlocksArea');
+
+            header.innerHTML = '';
+            gridLines.innerHTML = '';
+
+            for (let hour = 0; hour < 24; hour++) {
+                const hourFormatted = String(hour).padStart(2, '0') + ':00';
+                
+                // Hour Label
+                const hourLabel = document.createElement('div');
+                hourLabel.className = 'text-[10px] font-mono text-gray-400 border-l border-gray-200 dark:border-slate-700/60 pl-1 flex items-center select-none';
+                hourLabel.style.width = `${SLOT_WIDTH_PX * 4}px`;
+                hourLabel.innerText = hourFormatted;
+                header.appendChild(hourLabel);
+
+                // Grid Lines
+                for (let q = 0; q < 4; q++) {
+                    const line = document.createElement('div');
+                    line.style.width = `${SLOT_WIDTH_PX}px`;
+                    line.className = q === 0 
+                        ? 'border-l border-gray-200 dark:border-slate-700/60 h-full' 
+                        : 'border-l border-dashed border-gray-100 dark:border-slate-800/60 h-full';
+                    gridLines.appendChild(line);
+                }
+            }
+
+            blocksArea.ondragover = (e) => { e.preventDefault(); blocksArea.classList.add('drag-over'); };
+            blocksArea.ondragleave = () => blocksArea.classList.remove('drag-over');
+            blocksArea.ondrop = (e) => handleDropOnTimeline(e);
+        }
+
+        function handleDropOnTimeline(e) {
+            e.preventDefault();
+            const blocksArea = document.getElementById('timelineBlocksArea');
+            blocksArea.classList.remove('drag-over');
+
+            const rect = blocksArea.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const quarterIndex = Math.floor(offsetX / SLOT_WIDTH_PX);
+            const startMinutes = Math.max(0, Math.min(23 * 60 + 45, quarterIndex * 15));
+
+            const rawData = e.dataTransfer.getData('text/plain');
+            if (!rawData) return;
+            const item = JSON.parse(rawData);
+
+            if (item.type === 'timeline_block') {
+                const block = state.timelineBlocks.find(b => b.id === item.id);
+                if (block) {
+                    block.startMin = startMinutes;
+                    pushOverlappingBlocks(block);
+                    saveToStorage();
+                    renderTimelineBlocks();
+                    updateTimeNeedleAndStatus();
+                }
+                return;
+            }
+
+            const newBlock = { 
+                id: 'b_' + Date.now(), 
+                title: item.title || item.text, 
+                color: item.color || state.selectedColor || '#3b82f6', 
+                startMin: startMinutes, 
+                durationMin: 30, 
+                completed: false 
+            };
+
+            pushOverlappingBlocks(newBlock);
+            state.timelineBlocks.push(newBlock);
+            saveToStorage();
+            renderTimelineBlocks();
+            updateTimeNeedleAndStatus();
+        }
+
+        function pushOverlappingBlocks(targetBlock) {
+            state.timelineBlocks.sort((a, b) => a.startMin - b.startMin);
+            state.timelineBlocks.forEach(b => {
+                if (b.id !== targetBlock.id) {
+                    const bEnd = b.startMin + b.durationMin;
+                    const targetEnd = targetBlock.startMin + targetBlock.durationMin;
+                    if (targetBlock.startMin < bEnd && targetEnd > b.startMin) {
+                        b.startMin = targetEnd;
+                    }
+                }
+            });
+        }
+
+        function renderTimelineBlocks() {
+            document.querySelectorAll('.timeline-block').forEach(el => el.remove());
+            const area = document.getElementById('timelineBlocksArea');
+
+            state.timelineBlocks.forEach(block => {
+                const el = document.createElement('div');
+                const leftPx = (block.startMin / 15) * SLOT_WIDTH_PX;
+                const widthPx = (block.durationMin / 15) * SLOT_WIDTH_PX;
+                const isShort = block.durationMin <= 15;
+
+                el.draggable = true;
+                el.ondragstart = (e) => {
+                    if (isResizing) { e.preventDefault(); return; }
+                    e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'timeline_block', id: block.id }));
+                    el.classList.add('dragging');
+                };
+                el.ondragend = () => el.classList.remove('dragging');
+
+                el.dataset.id = block.id;
+                el.style.left = `${leftPx}px`;
+                el.style.width = `${widthPx}px`;
+                el.style.backgroundColor = block.completed ? '' : block.color;
+
+                if (isShort) {
+                    // 15 Dakikalık Kompakt Blok
+                    el.className = `timeline-block absolute top-1 bottom-1 rounded-xl px-1.5 text-[10px] shadow-sm flex items-center justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-200 dark:bg-slate-800 text-gray-400 border-gray-300' : 'block-waiting text-white'}`;
+                    el.innerHTML = `
+                        <span class="font-bold truncate pr-1" title="${escapeHtml(block.title)}">${escapeHtml(block.title)}</span>
+                        <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 shrink-0">${block.completed ? '✓' : '◯'}</button>
+                        ${!block.completed ? `<div class="absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-r-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
+                    `;
+                } else {
+                    // Geniş Blok
+                    el.className = `timeline-block absolute top-1 bottom-1 rounded-xl p-2 text-xs shadow-sm flex flex-col justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-200 dark:bg-slate-800 text-gray-400 border-gray-300' : 'block-waiting text-white'}`;
+                    el.innerHTML = `
+                        <div class="flex items-center justify-between font-medium">
+                            <span class="truncate pr-1">${escapeHtml(block.title)}</span>
+                            <div class="flex items-center space-x-1 shrink-0">
+                                <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 transition">${block.completed ? '✓' : '◯'}</button>
+                                <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-300 text-[10px]">✕</button>
+                            </div>
+                        </div>
+                        <div class="text-[9px] opacity-85 font-mono flex justify-between items-end">
+                            <span class="time-text">${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + block.durationMin)}</span>
+                            <span class="duration-text">${block.durationMin} dk</span>
+                        </div>
+                        ${!block.completed ? `<div class="absolute right-0 top-0 bottom-0 w-2.5 cursor-ew-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-r-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
+                    `;
+                }
+
+                area.appendChild(el);
+            });
+        }
+
+        function initResize(e, blockId) {
+            e.stopPropagation();
+            isResizing = true;
+            resizeBlockId = blockId;
+            resizeStartX = e.clientX;
+            const block = state.timelineBlocks.find(b => b.id === blockId);
+            resizeStartDuration = block.durationMin;
+
+            document.addEventListener('mousemove', handleResize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function handleResize(e) {
+            if (!isResizing) return;
+            const deltaX = e.clientX - resizeStartX;
+            const quarters = Math.round(deltaX / SLOT_WIDTH_PX);
+            let newDuration = resizeStartDuration + (quarters * 15);
+            if (newDuration < 15) newDuration = 15;
+
+            const block = state.timelineBlocks.find(b => b.id === resizeBlockId);
+            if (block && block.durationMin !== newDuration) {
+                block.durationMin = newDuration;
+                const domEl = document.querySelector(`.timeline-block[data-id='${resizeBlockId}']`);
+                if (domEl) {
+                    domEl.style.width = `${(newDuration / 15) * SLOT_WIDTH_PX}px`;
+                    const timeText = domEl.querySelector('.time-text');
+                    const durationText = domEl.querySelector('.duration-text');
+                    if (timeText) timeText.innerText = `${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + newDuration)}`;
+                    if (durationText) durationText.innerText = `${newDuration} dk`;
+                }
+            }
+        }
+
+        function stopResize() {
+            if (!isResizing) return;
+            isResizing = false;
+            document.removeEventListener('mousemove', handleResize);
+            document.removeEventListener('mouseup', stopResize);
+            saveToStorage();
+            renderTimelineBlocks();
+            updateTimeNeedleAndStatus();
+        }
+
+        function toggleBlockComplete(id, e) {
+            e.stopPropagation();
+            const b = state.timelineBlocks.find(x => x.id === id);
+            if (b) { b.completed = !b.completed; saveToStorage(); renderTimelineBlocks(); updateTimeNeedleAndStatus(); }
+        }
+
+        function deleteBlock(id, e) {
+            e.stopPropagation();
+            state.timelineBlocks = state.timelineBlocks.filter(x => x.id !== id);
+            saveToStorage(); renderTimelineBlocks(); updateTimeNeedleAndStatus();
+        }
+
+        function updateTimeNeedleAndStatus() {
+            const now = new Date();
+            const currentMin = (now.getHours() * 60) + now.getMinutes();
+            
+            // Zaman İğnesi Pozisyonu
+            const needle = document.getElementById('timeNeedle');
+            needle.style.left = `${(currentMin / 15) * SLOT_WIDTH_PX}px`;
+
+            // Gün İlerlemesi Hesaplama
+            const dayProgress = Math.round((currentMin / (24 * 60)) * 100);
+            document.getElementById('dayProgressDisplay').innerText = `%${dayProgress}`;
+
+            let activeBlock = null;
+
+            document.querySelectorAll('.timeline-block').forEach(el => {
+                const block = state.timelineBlocks.find(x => x.id === el.dataset.id);
+                if (!block) return;
+                const blockEnd = block.startMin + block.durationMin;
+
+                if (block.completed) {
+                    el.className = el.className.replace(/block-(active|waiting|overdue)/g, '') + ' block-completed';
+                } else if (currentMin >= block.startMin && currentMin < blockEnd) {
+                    el.className = el.className.replace(/block-(waiting|completed|overdue)/g, '') + ' block-active';
+                    activeBlock = block;
+                } else if (currentMin >= blockEnd) {
+                    el.className = el.className.replace(/block-(waiting|completed|active)/g, '') + ' block-overdue';
+                } else {
+                    el.className = el.className.replace(/block-(active|completed|overdue)/g, '') + ' block-waiting';
+                }
+            });
+
+            if (activeBlock) {
+                document.getElementById('activeTaskTitle').innerText = activeBlock.title;
+                const remaining = (activeBlock.startMin + activeBlock.durationMin) - currentMin;
+                document.getElementById('activeTaskRemaining').innerText = `${remaining} dk`;
+                setAppAccentColor(activeBlock.color);
+            } else {
+                document.getElementById('activeTaskTitle').innerText = "Aktif Görev Bulunmuyor";
+                document.getElementById('activeTaskRemaining').innerText = "--";
+                setAppAccentColor('#2563eb'); // Varsayılan mavi tema
+            }
+        }
+
+        function scrollToCurrentTime() {
+            const container = document.getElementById('timelineContainer');
+            if (!container) return;
+            const currentMin = (new Date().getHours() * 60) + new Date().getMinutes();
+            const targetX = (currentMin / 15) * SLOT_WIDTH_PX;
+            container.scrollLeft = Math.max(0, targetX - 200);
         }
 
         function saveTemplate() {
@@ -480,339 +726,6 @@
             });
         }
 
-        function renderTimelineGrid() {
-            const grid = document.getElementById('timelineGrid');
-            grid.innerHTML = '';
-            for (let hour = START_HOUR; hour < END_HOUR; hour++) {
-                const hourFormatted = String(hour).padStart(2, '0') + ':00';
-                const slot = document.createElement('div');
-                slot.className = 'flex border-b border-gray-100 dark:border-slate-700/40 relative';
-                slot.style.height = `${SLOT_HEIGHT_PX * 4}px`; 
-                slot.innerHTML = `
-                    <div class="w-12 text-[10px] font-mono text-gray-400 pt-1 border-r border-gray-100 dark:border-slate-700/40 select-none">${hourFormatted}</div>
-                    <div class="flex-1 relative drop-zone" data-hour="${hour}">
-                        <div class="absolute inset-x-0 top-1/4 border-b border-dashed border-gray-50 dark:border-slate-800/50"></div>
-                        <div class="absolute inset-x-0 top-1/2 border-b border-gray-100 dark:border-slate-800/80"></div>
-                        <div class="absolute inset-x-0 top-3/4 border-b border-dashed border-gray-50 dark:border-slate-800/50"></div>
-                    </div>
-                `;
-                const zone = slot.querySelector('.drop-zone');
-                zone.ondragover = (e) => { e.preventDefault(); zone.classList.add('drag-over'); };
-                zone.ondragleave = () => zone.classList.remove('drag-over');
-                zone.ondrop = (e) => handleDropOnTimeline(e, hour);
-                grid.appendChild(slot);
-            }
-        }
-
-        function scrollToCurrentTime() {
-            const container = document.getElementById('timelineContainer');
-            if (!container) return;
-            const currentHour = new Date().getHours();
-            container.scrollTop = Math.max(0, currentHour - 1) * 4 * SLOT_HEIGHT_PX;
-        }
-
-        function handleDropOnTimeline(e, hour) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('drag-over');
-            const rawData = e.dataTransfer.getData('text/plain');
-            if (!rawData) return;
-            const item = JSON.parse(rawData);
-            const rect = e.currentTarget.getBoundingClientRect();
-            const offsetY = e.clientY - rect.top;
-            const quarterIndex = Math.floor(offsetY / SLOT_HEIGHT_PX);
-            const startMinutes = (hour * 60) + (quarterIndex * 15);
-
-            // Çizelge içindeki bir bloğu taşıyorsak
-            if (item.type === 'timeline_block') {
-                const block = state.timelineBlocks.find(b => b.id === item.id);
-                if (block) {
-                    block.startMin = startMinutes;
-                    pushOverlappingBlocks(block);
-                    saveToStorage();
-                    renderTimelineBlocks();
-                    updateTimeNeedleAndStatus();
-                }
-                return;
-            }
-
-            // Yeni eklenen görevler
-            const newBlock = { 
-                id: 'b_' + Date.now(), 
-                title: item.title || item.text, 
-                color: item.color || '#3b82f6', 
-                startMin: startMinutes, 
-                durationMin: 30, 
-                completed: false 
-            };
-            pushOverlappingBlocks(newBlock);
-            state.timelineBlocks.push(newBlock);
-            saveToStorage();
-            renderTimelineBlocks();
-            updateTimeNeedleAndStatus();
-        }
-
-        function pushOverlappingBlocks(targetBlock) {
-            state.timelineBlocks.sort((a, b) => a.startMin - b.startMin);
-            state.timelineBlocks.forEach(b => {
-                if (b.id !== targetBlock.id) {
-                    const bEnd = b.startMin + b.durationMin;
-                    const targetEnd = targetBlock.startMin + targetBlock.durationMin;
-                    if (targetBlock.startMin < bEnd && targetEnd > b.startMin) b.startMin = targetEnd;
-                }
-            });
-        }
-
-        function renderTimelineBlocks() {
-            document.querySelectorAll('.timeline-block').forEach(el => el.remove());
-            const container = document.getElementById('timelineGrid');
-
-            state.timelineBlocks.forEach(block => {
-                const el = document.createElement('div');
-                const topPx = (block.startMin / 15) * SLOT_HEIGHT_PX;
-                const heightPx = (block.durationMin / 15) * SLOT_HEIGHT_PX;
-                const isShort = block.durationMin <= 15;
-
-                // Görevin çizelge içinde sürüklenebilmesini sağlayan ayarlar
-                el.draggable = true;
-                el.ondragstart = (e) => {
-                    if (isResizing) { e.preventDefault(); return; }
-                    e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'timeline_block', id: block.id }));
-                    el.classList.add('dragging');
-                };
-                el.ondragend = () => el.classList.remove('dragging');
-                
-                el.dataset.id = block.id;
-                el.style.top = `${topPx}px`;
-                el.style.height = `${heightPx}px`;
-                el.style.backgroundColor = block.completed ? '' : block.color;
-
-                if (isShort) {
-                    // 15 Dakikalık dar alan için kompakt tek satırlı düzen
-                    el.className = `timeline-block absolute left-14 right-2 rounded-lg px-2 text-[11px] shadow-sm flex items-center justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-100 dark:bg-slate-800 text-gray-400 border-gray-200' : 'block-waiting text-white'}`;
-                    el.innerHTML = `
-                        <div class="flex items-center space-x-1.5 overflow-hidden pr-1">
-                            <span class="font-semibold truncate">${escapeHtml(block.title)}</span>
-                            <span class="text-[9px] font-mono opacity-80 shrink-0">(${minToTimeStr(block.startMin)})</span>
-                        </div>
-                        <div class="flex items-center space-x-1 shrink-0">
-                            <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 transition">${block.completed ? '✓' : '◯'}</button>
-                            <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-300">✕</button>
-                        </div>
-                        ${!block.completed ? `<div class="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize opacity-0 hover:opacity-100 bg-black/20 dark:bg-white/30 rounded-b-lg" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
-                    `;
-                } else {
-                    // 15 Dakikadan büyük görevler için geniş düzen
-                    el.className = `timeline-block absolute left-14 right-2 rounded-xl p-2 text-xs shadow-sm flex flex-col justify-between border transition-all z-10 cursor-grab active:cursor-grabbing ${block.completed ? 'block-completed bg-gray-100 dark:bg-slate-800 text-gray-400 border-gray-200' : 'block-waiting text-white'}`;
-                    el.innerHTML = `
-                        <div class="flex items-center justify-between font-medium">
-                            <span class="truncate">${escapeHtml(block.title)}</span>
-                            <div class="flex items-center space-x-1">
-                                <button onclick="toggleBlockComplete('${block.id}', event)" class="hover:scale-110 transition">${block.completed ? '✓' : '◯'}</button>
-                                <button onclick="deleteBlock('${block.id}', event)" class="hover:text-red-300">✕</button>
-                            </div>
-                        </div>
-                        <div class="text-[10px] opacity-80 font-mono flex justify-between items-end pb-0.5 px-0.5">
-                            <span class="time-text">${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + block.durationMin)}</span>
-                            <span class="duration-text">${block.durationMin} dk</span>
-                        </div>
-                        ${!block.completed ? `<div class="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize opacity-0 hover:opacity-100 bg-black/10 dark:bg-white/20 rounded-b-xl" onmousedown="initResize(event, '${block.id}')"></div>` : ''}
-                    `;
-                }
-
-                el.onclick = (e) => { 
-                    if (e.target.tagName !== 'BUTTON' && !e.target.classList.contains('cursor-ns-resize')) {
-                        setPomodoroTask(block); 
-                    }
-                };
-                container.appendChild(el);
-            });
-        }
-
-        // DRAG TO RESIZE LOGIC
-        function initResize(e, blockId) {
-            e.stopPropagation();
-            isResizing = true;
-            resizeBlockId = blockId;
-            resizeStartY = e.clientY;
-            const block = state.timelineBlocks.find(b => b.id === blockId);
-            resizeStartDuration = block.durationMin;
-            document.addEventListener('mousemove', handleResize);
-            document.addEventListener('mouseup', stopResize);
-        }
-
-        function handleResize(e) {
-            if (!isResizing) return;
-            const deltaY = e.clientY - resizeStartY;
-            const quarters = Math.round(deltaY / SLOT_HEIGHT_PX); 
-            let newDuration = resizeStartDuration + (quarters * 15);
-            if (newDuration < 15) newDuration = 15;
-            
-            const block = state.timelineBlocks.find(b => b.id === resizeBlockId);
-            if (block && block.durationMin !== newDuration) {
-                block.durationMin = newDuration;
-                const domEl = document.querySelector(`.timeline-block[data-id='${resizeBlockId}']`);
-                if(domEl) {
-                    domEl.style.height = `${(newDuration / 15) * SLOT_HEIGHT_PX}px`;
-                    const timeText = domEl.querySelector('.time-text');
-                    const durationText = domEl.querySelector('.duration-text');
-                    if (timeText) timeText.innerText = `${minToTimeStr(block.startMin)} - ${minToTimeStr(block.startMin + newDuration)}`;
-                    if (durationText) durationText.innerText = `${newDuration} dk`;
-                }
-            }
-        }
-
-        function stopResize(e) {
-            if (!isResizing) return;
-            isResizing = false;
-            document.removeEventListener('mousemove', handleResize);
-            document.removeEventListener('mouseup', stopResize);
-            saveToStorage();
-            renderTimelineBlocks(); // Blok görünümünü 15dk şablonuna göre tazele
-            updateTimeNeedleAndStatus();
-        }
-
-        function toggleBlockComplete(id, e) {
-            e.stopPropagation();
-            const b = state.timelineBlocks.find(x => x.id === id);
-            if (b) { b.completed = !b.completed; saveToStorage(); renderTimelineBlocks(); updateTimeNeedleAndStatus(); }
-        }
-
-        function deleteBlock(id, e) {
-            e.stopPropagation();
-            state.timelineBlocks = state.timelineBlocks.filter(x => x.id !== id);
-            saveToStorage(); renderTimelineBlocks(); updateTimeNeedleAndStatus();
-        }
-
-        function updateTimeNeedleAndStatus() {
-            const now = new Date();
-            const currentMin = (now.getHours() * 60) + now.getMinutes();
-            const needle = document.getElementById('timeNeedle');
-            needle.style.top = `${(currentMin / 15) * SLOT_HEIGHT_PX}px`;
-
-            let currentActiveBlock = null;
-
-            document.querySelectorAll('.timeline-block').forEach(el => {
-                const block = state.timelineBlocks.find(x => x.id === el.dataset.id);
-                if (!block) return;
-                const blockEnd = block.startMin + block.durationMin;
-
-                if (block.completed) el.className = el.className.replace(/block-(active|waiting|overdue)/g, '') + ' block-completed';
-                else if (currentMin >= block.startMin && currentMin < blockEnd) { el.className = el.className.replace(/block-(waiting|completed|overdue)/g, '') + ' block-active'; currentActiveBlock = block; }
-                else if (currentMin >= blockEnd) el.className = el.className.replace(/block-(waiting|completed|active)/g, '') + ' block-overdue';
-                else el.className = el.className.replace(/block-(active|completed|overdue)/g, '') + ' block-waiting';
-            });
-
-            if (currentActiveBlock) {
-                document.getElementById('activeTaskTitle').innerText = currentActiveBlock.title;
-                document.getElementById('activeTaskRemaining').innerText = `Kalan süre: ${(currentActiveBlock.startMin + currentActiveBlock.durationMin) - currentMin} dk`;
-                document.getElementById('pomoStatusDot').className = 'w-3 h-3 rounded-full bg-blue-500 animate-pulse';
-            } else {
-                document.getElementById('activeTaskTitle').innerText = "Aktif Odak Bulunmuyor";
-                document.getElementById('activeTaskRemaining').innerText = "Zaman çizelgesinden bir blok seçin";
-                document.getElementById('pomoStatusDot').className = 'w-3 h-3 rounded-full bg-gray-300 dark:bg-slate-600';
-            }
-        }
-
-        function togglePomoSettings() {
-            document.getElementById('pomoSettingsPanel').classList.toggle('hidden');
-            document.getElementById('pomoWorkInput').value = state.pomodoro.workMin;
-            document.getElementById('pomoShortInput').value = state.pomodoro.shortBreakMin;
-            document.getElementById('pomoLongInput').value = state.pomodoro.longBreakMin;
-            document.getElementById('pomoRoundsInput').value = state.pomodoro.rounds;
-        }
-
-        function savePomoSettings() {
-            state.pomodoro.workMin = parseInt(document.getElementById('pomoWorkInput').value) || 25;
-            state.pomodoro.shortBreakMin = parseInt(document.getElementById('pomoShortInput').value) || 5;
-            state.pomodoro.longBreakMin = parseInt(document.getElementById('pomoLongInput').value) || 15;
-            state.pomodoro.rounds = parseInt(document.getElementById('pomoRoundsInput').value) || 4;
-            
-            if (!state.pomodoro.running) {
-                state.pomodoro.timeLeft = state.pomodoro.workMin * 60;
-                state.pomodoro.currentRound = 1;
-                state.pomodoro.isWork = true;
-                updatePomoDisplay();
-            }
-            saveToStorage();
-            togglePomoSettings();
-        }
-
-        function setPomodoroTask(block) {
-            state.pomodoro.activeBlockId = block.id;
-            document.getElementById('activeTaskTitle').innerText = block.title;
-            state.pomodoro.timeLeft = block.durationMin * 60;
-            state.pomodoro.isWork = true;
-            updatePomoDisplay();
-        }
-
-        function togglePomodoro() {
-            if (state.pomodoro.running) {
-                clearInterval(state.pomodoro.interval);
-                state.pomodoro.running = false;
-                document.getElementById('pomoPlayIcon').classList.remove('hidden');
-                document.getElementById('pomoPauseIcon').classList.add('hidden');
-            } else {
-                state.pomodoro.running = true;
-                document.getElementById('pomoPlayIcon').classList.add('hidden');
-                document.getElementById('pomoPauseIcon').classList.remove('hidden');
-                state.pomodoro.interval = setInterval(() => {
-                    if (state.pomodoro.timeLeft > 0) {
-                        state.pomodoro.timeLeft--;
-                        updatePomoDisplay();
-                    } else {
-                        handlePomodoroComplete();
-                    }
-                }, 1000);
-            }
-        }
-
-        function handlePomodoroComplete() {
-            if (state.pomodoro.isWork) {
-                if (state.pomodoro.currentRound < state.pomodoro.rounds) {
-                    state.pomodoro.isWork = false;
-                    state.pomodoro.timeLeft = state.pomodoro.shortBreakMin * 60;
-                    alert("Çalışma tamamlandı! Kısa molaya geçiliyor.");
-                } else {
-                    state.pomodoro.isWork = false;
-                    state.pomodoro.timeLeft = state.pomodoro.longBreakMin * 60;
-                    alert("Tüm turlar tamamlandı! Uzun molaya geçiliyor.");
-                }
-            } else {
-                if (state.pomodoro.currentRound < state.pomodoro.rounds) {
-                    state.pomodoro.currentRound++;
-                    state.pomodoro.isWork = true;
-                    state.pomodoro.timeLeft = state.pomodoro.workMin * 60;
-                    alert("Mola bitti! Yeni tura başlanıyor.");
-                } else {
-                    resetPomodoro();
-                    alert("Tebrikler, Pomodoro seansını tamamladınız!");
-                    return;
-                }
-            }
-            updatePomoDisplay();
-        }
-
-        function resetPomodoro() {
-            clearInterval(state.pomodoro.interval);
-            state.pomodoro.running = false;
-            state.pomodoro.isWork = true;
-            state.pomodoro.currentRound = 1;
-            state.pomodoro.timeLeft = state.pomodoro.workMin * 60;
-            document.getElementById('pomoPlayIcon').classList.remove('hidden');
-            document.getElementById('pomoPauseIcon').classList.add('hidden');
-            updatePomoDisplay();
-        }
-
-        function updatePomoDisplay() {
-            const m = Math.floor(state.pomodoro.timeLeft / 60);
-            const s = state.pomodoro.timeLeft % 60;
-            document.getElementById('pomoTimerDisplay').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            
-            const roundText = state.pomodoro.isWork ? 'ÇALIŞMA' : 'MOLA';
-            document.getElementById('pomoRoundDisplay').innerText = `${roundText} ${state.pomodoro.currentRound}/${state.pomodoro.rounds}`;
-            document.getElementById('pomoRoundDisplay').className = state.pomodoro.isWork ? "text-[10px] font-bold text-blue-500 dark:text-blue-400 tracking-wider" : "text-[10px] font-bold text-emerald-500 dark:text-emerald-400 tracking-wider";
-        }
-
         function handleBrainDumpKeyPress(e) { if (e.key === 'Enter') addBrainDump(); }
 
         function addBrainDump() {
@@ -835,7 +748,7 @@
                 el.className = 'p-2.5 bg-gray-50 dark:bg-slate-900/80 rounded-xl border border-gray-100 dark:border-slate-800 text-xs flex items-center justify-between cursor-grab active:cursor-grabbing hover:border-gray-300 transition';
                 el.draggable = true;
                 el.ondragstart = (e) => e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'brain', ...item }));
-                el.innerHTML = `<span class="text-gray-700 dark:text-gray-300 truncate max-w-[160px]">${escapeHtml(item.text)}</span><button onclick="deleteBrainDump('${item.id}')" class="text-gray-400 hover:text-red-500">✕</button>`;
+                el.innerHTML = `<span class="text-gray-700 dark:text-gray-300 truncate max-w-[200px]">${escapeHtml(item.text)}</span><button onclick="deleteBrainDump('${item.id}')" class="text-gray-400 hover:text-red-500">✕</button>`;
                 container.appendChild(el);
             });
         }
@@ -860,7 +773,7 @@
                 });
             }
             state.timelineBlocks = []; saveToStorage(); renderAll(); toggleCloseDayModal(false);
-            alert("Ekran yenilendi. Yeni gün için harika bir başlangıç dileriz!");
+            alert("Yeni bir güne temiz bir sayfayla başlıyorsunuz!");
         }
 
         function exportData() {
@@ -887,7 +800,7 @@
 
         function renderAll() {
             renderFocuses(); renderTemplatesDropdown(); renderTimelineBlocks(); renderBrainDump();
-            updateTimeNeedleAndStatus(); updatePomoDisplay();
+            updateTimeNeedleAndStatus();
         }
 
         function minToTimeStr(totalMin) { return `${String(Math.floor(totalMin / 60) % 24).padStart(2, '0')}:${String(totalMin % 60).padStart(2, '0')}`; }
