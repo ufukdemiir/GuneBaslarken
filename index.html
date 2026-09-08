@@ -110,6 +110,11 @@
                     </label>
                 </div>
 
+                <!-- Sosyal Medya & Ekosistem Butonu -->
+                <button onclick="toggleEcosystemModal(true)" title="Sosyal & Uygulama Ekosistemi" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-300 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                </button>
+
                 <button onclick="toggleHelpModal(true)" title="Nasıl Kullanılır?" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-300 transition-colors font-bold">
                     ?
                 </button>
@@ -266,7 +271,10 @@
 
                     <div class="flex space-x-2">
                         <input type="text" id="brainDumpInput" placeholder="Aklına gelen bir görev..." onkeypress="handleBrainDumpKeyPress(event)" class="flex-1 px-3 py-2 text-xs bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button onclick="addBrainDump()" class="px-4 py-2 accent-bg text-white text-xs rounded-xl transition-all duration-500 hover:opacity-90 font-bold">+</button>
+                        <button onclick="addBrainDump()" title="Not Ekle" class="px-4 py-2 accent-bg text-white text-xs rounded-xl transition-all duration-500 hover:opacity-90 font-bold">+</button>
+                        <button onclick="clearAllBrainDump()" title="Tüm Notları Temizle" class="px-3 py-2 accent-bg text-white text-xs rounded-xl transition-all duration-500 hover:opacity-90 flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
                     </div>
                     <div id="brainDumpList" class="space-y-2 max-h-[220px] overflow-y-auto pr-1"></div>
                 </div>
@@ -285,6 +293,8 @@
     </main>
 
     <!-- MODALLAR & BİLDİRİMLER -->
+
+    <!-- Kullanım Rehberi Modalı -->
     <div id="helpModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-gray-100 dark:border-slate-700">
             <h3 class="text-lg font-bold mb-4 accent-text">Kullanım Rehberi</h3>
@@ -298,7 +308,49 @@
         </div>
     </div>
 
-    <!-- YENİLENMİŞ GÜNÜ KAPAT MODALI -->
+    <!-- Sosyal & Ekosistem Modalı -->
+    <div id="ecosystemModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-gray-100 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-slate-700/60">
+                <h3 class="text-sm font-bold accent-text">Uygulamalar & Sosyal Medya</h3>
+                <button onclick="toggleEcosystemModal(false)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
+            </div>
+            
+            <p class="text-xs text-gray-500 dark:text-gray-400">Geliştiriciye ulaşmak veya diğer verimlilik araçlarını incelemek için aşağıdaki bağlantıları kullanabilirsiniz:</p>
+            
+            <div class="space-y-2">
+                <!-- Diğer Uygulama: Yapılacak Listesi -->
+                <a href="https://ufukdemiir.github.io/YapilacaklarListesiUygulamasi/" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 p-3 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 transition group bg-gray-50/50 dark:bg-slate-900/50">
+                    <div class="w-8 h-8 rounded-lg accent-bg text-white flex items-center justify-center text-xs font-bold shrink-0">✓</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">Yapılacak Listesi</div>
+                        <div class="text-[10px] text-gray-400 truncate">Verimlilik Uygulaması</div>
+                    </div>
+                    <span class="text-xs text-gray-400 font-bold">↗</span>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com/ufukdemiir" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                    <svg class="w-5 h-5 text-gray-800 dark:text-gray-200" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    <span class="text-xs font-medium text-gray-700 dark:text-gray-200">GitHub</span>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/ufukdemiir/" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.53a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg>
+                    <span class="text-xs font-medium text-gray-700 dark:text-gray-200">LinkedIn</span>
+                </a>
+
+                <!-- Pinterest -->
+                <a href="https://tr.pinterest.com/demiirufuk/" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                    <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.535.535 6.627 0 12-5.373 12-12C24 5.372 18.627 0 12 0z"/></svg>
+                    <span class="text-xs font-medium text-gray-700 dark:text-gray-200">Pinterest</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Günü Kapat Modalı -->
     <div id="closeDayModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-gray-100 dark:border-slate-700 space-y-4">
             <div>
@@ -696,7 +748,7 @@
                 const blockEnd = block.startMin + block.durationMin;
                 totalTaskDuration += block.durationMin;
                 
-                // Görev Blokları Üzerinde Geçen Zaman Hesabı (Sadece Blok Süreleri)
+                // Görev Blokları Üzerinde Geçen Zaman Hesabı
                 if (currentMin >= blockEnd) {
                     elapsedTaskDuration += block.durationMin;
                 } else if (currentMin > block.startMin) {
@@ -838,6 +890,15 @@
             saveToStorage(); renderBrainDump();
         }
 
+        function clearAllBrainDump() {
+            if (state.brainDump.length === 0) return;
+            if (confirm("Hızlı Notlar bölümündeki tüm notlarınız silinecektir. Emin misiniz?")) {
+                state.brainDump = [];
+                saveToStorage();
+                renderBrainDump();
+            }
+        }
+
         function renderBrainDump() {
             const container = document.getElementById('brainDumpList');
             container.innerHTML = '';
@@ -851,16 +912,10 @@
             });
         }
 
-        function openCloseDayModal() {
-            toggleCloseDayModal(true);
-        }
-
-        function toggleCloseDayModal(show) { 
-            document.getElementById('closeDayModal').classList.toggle('hidden', !show); 
-        }
+        function openCloseDayModal() { toggleCloseDayModal(true); }
+        function toggleCloseDayModal(show) { document.getElementById('closeDayModal').classList.toggle('hidden', !show); }
 
         function finishDay() {
-            // Zaman Çizelgesi ve Günün Odakları tamamen sıfırlanır
             state.timelineBlocks = [];
             state.focuses = [];
             saveToStorage();
@@ -889,6 +944,7 @@
         function showBookmarkTip() { document.getElementById('bookmarkTip').classList.remove('hidden'); }
         function hideBookmarkTip() { document.getElementById('bookmarkTip').classList.add('hidden'); }
         function toggleHelpModal(show) { document.getElementById('helpModal').classList.toggle('hidden', !show); }
+        function toggleEcosystemModal(show) { document.getElementById('ecosystemModal').classList.toggle('hidden', !show); }
 
         function renderAll() {
             renderFocuses(); renderTemplatesDropdown(); renderTimelineBlocks(); renderBrainDump();
