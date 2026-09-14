@@ -9,8 +9,8 @@
     <meta name="theme-color" content="#FF6B00">
     <title>Güne Başlarken</title>
     
-    <!-- Dinamik SVG Favicon -->
-    <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%232563eb'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
+    <!-- Dinamik SVG Favicon (Varsayılan Renk: Turuncu #FF6B00) -->
+    <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23FF6B00'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { corePlugins: { preflight: false } }</script>
@@ -171,6 +171,7 @@
             width: 100%; max-width: 850px;
             display: flex; justify-content: flex-end; align-items: center; gap: 10px;
             margin-top: 1.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;
+            transition: justify-content 0.3s ease;
         }
         .action-btn {
             background: var(--input-bg); border: 1px solid var(--glass-border);
@@ -288,7 +289,7 @@
             .task-row { flex-direction: column; align-items: flex-start; gap: 10px; }
             .task-row-right { width: 100%; justify-content: space-between; }
             .desktop-only, .hint-divider:nth-child(2) { display: none; }
-            .task-list-header { justify-content: center; }
+            .task-list-header { justify-content: center !important; }
             .action-btn { flex: 1; justify-content: center; padding: 10px; }
             .upcoming-tasks { padding: 15px; }
         }
@@ -321,7 +322,7 @@
     <!-- Modallar -->
     <div id="modal-howto" class="modal-overlay" onclick="closeModal(event, 'modal-howto')">
         <div class="modal-content">
-            <button class="modal-close" onclick="document.getElementById('modal-howto').style.display='none'">&times;</button>
+            <button class="modal-close" onclick="closeModalDirect('modal-howto')">&times;</button>
             <h2 style="margin-bottom:20px; font-size:1.5rem; font-weight:700;">Nasıl Kullanılır?</h2>
             <div class="flex flex-col gap-4">
                 <div class="flex items-start gap-3">
@@ -343,7 +344,7 @@
     <!-- Şablon Yöneticisi Modalı -->
     <div id="modal-templates" class="modal-overlay" onclick="closeModal(event, 'modal-templates')">
         <div class="modal-content">
-            <button class="modal-close" onclick="document.getElementById('modal-templates').style.display='none'">&times;</button>
+            <button class="modal-close" onclick="closeModalDirect('modal-templates')">&times;</button>
             <h2 style="margin-bottom:20px; font-size:1.5rem; font-weight:700;">Şablonlar</h2>
             <div id="template-list-container" class="flex flex-col gap-3">
                 <!-- Şablonlar Buraya Gelecek -->
@@ -351,9 +352,54 @@
         </div>
     </div>
 
+    <!-- Şablon Kaydet Modalı -->
+    <div id="modal-save-template" class="modal-overlay" onclick="closeModal(event, 'modal-save-template')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModalDirect('modal-save-template')">&times;</button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                </div>
+                <div>
+                    <h2 style="font-size:1.3rem; font-weight:700;" class="text-gray-900">Şablonu Kaydet</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Mevcut görev listenizi tekrar kullanmak üzere kaydedin.</p>
+                </div>
+            </div>
+            <div class="mb-5">
+                <label for="template-name-input" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Şablon Adı</label>
+                <input type="text" id="template-name-input" placeholder="Örn: Sabah Rutini, Verimlilik Blokları" onkeydown="if(event.key==='Enter') confirmSaveTemplate()" class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition" style="background:#f9fafb; color:#1f2937;">
+            </div>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModalDirect('modal-save-template')" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 transition border border-gray-200">İptal</button>
+                <button onclick="confirmSaveTemplate()" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 shadow-md shadow-orange-500/20 transition">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Görevleri Temizle Onay Modalı -->
+    <div id="modal-clear-tasks" class="modal-overlay" onclick="closeModal(event, 'modal-clear-tasks')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModalDirect('modal-clear-tasks')">&times;</button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </div>
+                <div>
+                    <h2 style="font-size:1.3rem; font-weight:700;" class="text-gray-900">Görevleri Temizle</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Bu işlem geri alınamaz.</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-6 leading-relaxed">Eklenmiş tüm görevler listeden kaldırılacaktır. Devam etmek istediğinize emin misiniz?</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModalDirect('modal-clear-tasks')" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 transition border border-gray-200">Vazgeç</button>
+                <button onclick="confirmClearAllTasks()" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-red-500 hover:bg-red-600 shadow-md shadow-red-500/20 transition">Evet, Temizle</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-social" class="modal-overlay" onclick="closeModal(event, 'modal-social')">
         <div class="modal-content">
-            <button class="modal-close" onclick="document.getElementById('modal-social').style.display='none'">&times;</button>
+            <button class="modal-close" onclick="closeModalDirect('modal-social')">&times;</button>
             <h2 style="margin-bottom:24px; font-size:1.5rem; font-weight:700;">Bağlantılar</h2>
             <div class="flex flex-col gap-3">
                 <a href="https://github.com/ufukdemiir" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-4 p-3 rounded-2xl border border-gray-200 hover:bg-gray-50 transition">
@@ -384,7 +430,7 @@
 
     <div id="modal-bookmark" class="modal-overlay" onclick="closeModal(event, 'modal-bookmark')">
         <div class="modal-content text-center">
-            <button class="modal-close" onclick="document.getElementById('modal-bookmark').style.display='none'">&times;</button>
+            <button class="modal-close" onclick="closeModalDirect('modal-bookmark')">&times;</button>
             <div class="mx-auto w-16 h-16 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mb-4">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
             </div>
@@ -471,9 +517,20 @@
     </div>
 
     <script>
+        // Favicon Rengini Dinamik Güncelleme
+        const DEFAULT_FAVICON_COLOR = '#FF6B00';
+        
+        function updateFaviconColor(hexColor) {
+            const favicon = document.getElementById('favicon');
+            if (!favicon) return;
+            const encodedColor = encodeURIComponent(hexColor);
+            favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='${encodedColor}'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>`;
+        }
+
         // Arayüz ve Araçlar
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(e, id) { if(e.target.id === id) document.getElementById(id).style.display = 'none'; }
+        function closeModalDirect(id) { document.getElementById(id).style.display = 'none'; }
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
         
         function showToast(message) {
@@ -553,12 +610,14 @@
                 if (e.ctrlKey || e.metaKey) {
                     document.getElementById('start-btn').click();
                 } else if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'BUTTON') {
-                    if(document.activeElement.id !== 'start-btn') document.getElementById('add-btn').click();
+                    if(document.activeElement.id !== 'start-btn' && document.activeElement.id !== 'template-name-input') {
+                        document.getElementById('add-btn').click();
+                    }
                 }
             }
         });
 
-        // Araç Çubuğu Görünürlük Kontrolü
+        // Araç Çubuğu Görünürlük & Hizalama Kontrolü
         function updateToolbarVisibility() {
             const header = document.getElementById('task-list-header');
             const btnTemplates = document.getElementById('btn-templates');
@@ -573,6 +632,13 @@
                 header.style.display = 'flex';
             } else {
                 header.style.display = 'none';
+            }
+
+            // Sadece kaydedilmiş şablon olup görev olmadığında ortala, görev yüklenince sağa hizala
+            if (!hasTasks && hasTemplates) {
+                header.style.justifyContent = 'center';
+            } else {
+                header.style.justifyContent = '';
             }
 
             btnTemplates.style.display = hasTemplates ? 'flex' : 'none';
@@ -625,21 +691,34 @@
         }
 
         function clearAllTasks() {
-            if(confirm("Tüm görevleri silmek istediğinize emin misiniz?")) {
-                tasks = [];
-                updateTaskPreview();
-                showToast("Tüm görevler temizlendi.");
-            }
+            if (tasks.length === 0) { showToast("Temizlenecek görev yok."); return; }
+            openModal('modal-clear-tasks');
+        }
+
+        function confirmClearAllTasks() {
+            tasks = [];
+            updateTaskPreview();
+            closeModalDirect('modal-clear-tasks');
+            showToast("Tüm görevler temizlendi.");
         }
 
         function saveTemplate() {
             if(tasks.length === 0) { showToast("Kaydedilecek görev yok."); return; }
-            const tName = prompt("Bu şablon için bir isim girin (Örn: Sabah Rutini):");
-            if(!tName || tName.trim() === "") return;
+            const input = document.getElementById('template-name-input');
+            input.value = '';
+            openModal('modal-save-template');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function confirmSaveTemplate() {
+            const input = document.getElementById('template-name-input');
+            const tName = input.value.trim();
+            if(!tName) { showToast("Lütfen bir şablon adı girin."); return; }
             
             let templates = JSON.parse(localStorage.getItem('zenflow_templates') || '{}');
-            templates[tName.trim()] = tasks;
+            templates[tName] = tasks;
             localStorage.setItem('zenflow_templates', JSON.stringify(templates));
+            closeModalDirect('modal-save-template');
             showToast(`"${tName}" kaydedildi.`);
             updateToolbarVisibility();
         }
@@ -672,7 +751,7 @@
             
             tasks = templates[name];
             updateTaskPreview();
-            document.getElementById('modal-templates').style.display = 'none';
+            closeModalDirect('modal-templates');
             showToast(`"${name}" şablonu yüklendi.`);
         }
 
@@ -728,6 +807,8 @@
                 }, 400);
             } else {
                 flow.style.opacity = '0';
+                // Ana sayfaya dönüldüğünde Favicon rengini varsayılan turuncuya sıfırla
+                updateFaviconColor(DEFAULT_FAVICON_COLOR);
                 setTimeout(() => {
                     flow.style.display = 'none';
                     setup.style.display = 'flex';
@@ -768,6 +849,9 @@
             const statBoxes = document.querySelectorAll('.stat-box');
 
             if (activeTask) {
+                // Favicon'u aktif görevin rengine dinamik olarak ayarla
+                updateFaviconColor(activeTask.color);
+
                 const darkerColor = shadeColor(activeTask.color, -30);
                 document.body.style.background = `linear-gradient(135deg, ${activeTask.color} 0%, ${darkerColor} 100%)`;
                 
@@ -791,6 +875,9 @@
                 statRemaining.innerText = formatVerboseTime(remainingSec);
 
             } else {
+                // Aktif görev olmadığında varsayılan favicon turuncusu
+                updateFaviconColor(DEFAULT_FAVICON_COLOR);
+
                 document.body.style.background = 'linear-gradient(135deg, #1f2937 0%, #111827 100%)';
                 flowScreen.style.color = '#ffffff';
                 statBoxes.forEach(box => {
