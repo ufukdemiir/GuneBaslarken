@@ -1,33 +1,84 @@
-# Güne Başlarken v1.0.0 🎉
+<div align="center">
 
-**Güne Başlarken**, gününüzü zaman bloklarına ayırarak odaklanmanızı artıran, sunucu bağımsız, %100 yerel ve minimalist bir web uygulamasıdır. Bu ilk kararlı sürümle birlikte uygulama modern web standartlarında tam işlevsel bir deneyim sunmaktadır.
+# Güne Başlarken
 
-🌐 **Canlı Önizleme:** [Güne Başlarken](https://ufukdemiir.github.io/GuneBaslarken/)
+**Zaman Bloklama ve Odak Yönetimi**
 
----
+Gününü zaman bloklarına ayırarak odaklanmayı artıran, sunucu gerektirmeyen, %100 yerel ve minimalist bir web uygulaması.
 
-## ✨ Öne Çıkan Özellikler
+[Canlı Demo](https://ufukdemiir.github.io/GuneBaslarken/) · [Hata Bildir](../../issues) · [Özellik Öner](../../issues)
 
-* **Zaman Bloklama Sistemi:** Günlük görevlerinizi saat aralıklarıyla planlayın. Zaman belirtmediğinizde akıllı sistem otomatik olarak 30 dakikalık bloklar oluşturur.
-* **Canlı Odak Akışı (Flow Mode):** Yüzdelik ilerleme çubuğu, geçen ve kalan süre sayaçları, sıradaki görevler ve minimalist tam ekran odak arayüzü.
-* **Dinamik Çevre Tasarımı:** Aktif görevinizin rengine göre eşzamanlı şekil alan arka plan gradyanları, otomatik metin kontrastı (YIQ) ve dinamik SVG favicon uyarlaması.
-* **Şablon Yöneticisi (`localStorage`):** Tekrar eden günlük rutinlerinizi ve görev listelerinizi isimlendirerek kaydedin, istediğiniz zaman tek tıkla yükleyin veya yönetin.
-* **Klavye Dostu Deneyim:** Sürtünmesiz kullanım için tam klavye navigasyonu (`TAB` ile geçiş, `Enter` ile görev ekleme, `Ctrl+Enter` ile akışı başlatma).
-* **Gece & Gündüz Modu:** Göz yormayan, her ortamda şık duran glassmorphism tabanlı modern arayüz ve tema desteği.
-* **%100 Gizli ve Yerel:** Kullanıcı verilerini harici bir sunucuda tutmaz; tüm işlemler tarayıcınızın yerel depolama alanında güvenle saklanır.
+<sub>HTML · CSS · Vanilla JavaScript · Tailwind CSS &nbsp;&nbsp;|&nbsp;&nbsp; Sunucusuz &nbsp;&nbsp;|&nbsp;&nbsp; Ücretsiz Kullanım</sub>
 
----
+</div>
 
-## 🛠️ Teknolojiler
+<br />
 
-* **HTML5 & CSS3** (Glassmorphism & Custom Properties)
-* **Vanilla JavaScript** (Modern ES6+ mimarisi, harici kütüphane bağımlılığı yok)
-* **Tailwind CSS** (Yardımcı stil entegrasyonu)
+## Hakkında
 
----
+Bu uygulama; dağınık zihni toplamak, günün akışını saat aralıklarıyla net bir şekilde planlamak ve bildirimlerle dikkat dağıtan karmaşık araçlardan kaçınarak sadece "o ana" odaklanmak amacıyla tasarlandı.
 
-## 📥 Kullanım
+İhtiyaç basitti: yan sekmede hızlıca plan yapılabilen, zaman seçilmediğinde akıllıca bloklar üreten, tarayıcı kapansa bile verisi kaybolmayan sade bir odak aracı. Ortaya çıkan sonuç, dinamik çevre tasarımlı bu zaman bloklama uygulaması oldu.
 
-Uygulamayı hemen test etmek için yukarıdaki bağlantıyı ziyaret edebilir veya repodaki **`index.html`** dosyasını bilgisayarınıza indirip herhangi bir modern tarayıcıda açabilirsiniz. Ekstra bir kurulum veya sunucu gerektirmez.
+Herhangi bir kayıt veya giriş gerektirmez; tüm veriler yalnızca kendi tarayıcınızda saklanır.
 
-*Geri bildirimleriniz ve katkılarınız için teşekkürler!*
+<br />
+
+## Özellikler
+
+**Zaman Bloklama Sistemi**  
+Günlük görevlerinizi saat aralıklarıyla planlayın. Zaman belirtmediğinizde akıllı sistem otomatik olarak 30 dakikalık bloklar oluşturur.
+
+**Canlı Odak Akışı (Flow Mode)**  
+Yüzdelik ilerleme çubuğu, geçen ve kalan süre sayaçları, sıradaki görevler ve minimalist tam ekran odak arayüzü.
+
+**Dinamik Çevre Tasarımı**  
+Aktif görevinizin rengine göre eşzamanlı şekil alan arka plan gradyanları, otomatik metin kontrastı (YIQ) ve dinamik SVG favicon uyarlaması.
+
+**Şablon Yöneticisi**  
+Tekrar eden günlük rutinlerinizi ve görev listelerinizi isimlendirerek kaydedin, istediğiniz zaman tek tıkla yükleyin veya yönetin.
+
+**Klavye Dostu Deneyim**  
+Sürtünmesiz kullanım için tam klavye navigasyonu (`TAB` ile geçiş, `Enter` ile görev ekleme, `Ctrl+Enter` ile akışı başlatma).
+
+**Gece & Gündüz Modu**  
+Göz yormayan, her ortamda şık duran glassmorphism tabanlı modern arayüz ve tema desteği.
+
+**Veri ve Gizlilik**  
+Tüm veriler yalnızca tarayıcınızın yerel deposunda (`localStorage`) tutulur; hiçbir sunucuya gönderilmez.
+
+<br />
+
+## Kullanılan Teknolojiler
+
+HTML5 & CSS3 (Glassmorphism & Custom Properties) · Vanilla JavaScript (ES6+) · Tailwind CSS
+
+<br />
+
+## Kullanım
+
+Uygulama tek bir statik HTML dosyasından oluşur; kurulum veya derleme gerektirmez.
+
+1. Bu repoyu klonlayın veya `index.html` dosyasını indirin
+2. Dosyayı doğrudan tarayıcınızda açın, ya da
+3. [Canlı demo](https://ufukdemiir.github.io/GuneBaslarken/) üzerinden GitHub Pages sürümünü kullanın
+
+Sık kullanacaksanız sayfayı yer imlerine eklemeniz (`Ctrl + D`) önerilir.
+
+<br />
+
+## Katkıda Bulunma
+
+Öneri ve hata bildirimleri için [Issues](../../issues) bölümünü kullanabilir, ya da doğrudan bir Pull Request açabilirsiniz.
+
+<br />
+
+## Lisans
+
+Bu proje ücretsiz ve açık kaynaklıdır; dilediğiniz gibi kullanabilir, değiştirebilir ve dağıtabilirsiniz.
+
+<br />
+
+<div align="center">
+<sub>Zamanınızı bloklayın, dikkatinizi koruyun, güne en iyi şekilde başlayın.</sub>
+</div>
