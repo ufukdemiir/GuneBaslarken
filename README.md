@@ -2,6 +2,8 @@
 
 # Güne Başlarken
 
+**v1.0.1 - Kararlı Sürüm 🎉**
+
 **Zaman Bloklama ve Odak Yönetimi**
 
 Gününü zaman bloklarına ayırarak odaklanmayı artıran, sunucu gerektirmeyen, %100 yerel ve minimalist bir web uygulaması.
@@ -18,7 +20,7 @@ Gününü zaman bloklarına ayırarak odaklanmayı artıran, sunucu gerektirmeye
 
 Bu uygulama; dağınık zihni toplamak, günün akışını saat aralıklarıyla net bir şekilde planlamak ve bildirimlerle dikkat dağıtan karmaşık araçlardan kaçınarak sadece "o ana" odaklanmak amacıyla tasarlandı.
 
-İhtiyaç basitti: yan sekmede hızlıca plan yapılabilen, zaman seçilmediğinde akıllıca bloklar üreten, tarayıcı kapansa bile verisi kaybolmayan sade bir odak aracı. Ortaya çıkan sonuç, dinamik çevre tasarımlı bu zaman bloklama uygulaması oldu.
+İhtiyaç basitti: yan sekmede hızlıca plan yapılabilen, zaman seçilmediğinde akıllıca bloklar üreten, tarayıcı kapansa bile verisi kaybolmayan sade bir odak aracı. Ortaya çıkan sonuç, dinamik çevre tasarımlı bu zaman bloklama uygulaması oldu. **Bu kararlı sürümle (v1.0.1) birlikte uygulama modern web standartlarında tam işlevsel, pürüzsüz ve stabil bir deneyim sunmaktadır.**
 
 Herhangi bir kayıt veya giriş gerektirmez; tüm veriler yalnızca kendi tarayıcınızda saklanır.
 
@@ -57,7 +59,7 @@ HTML5 & CSS3 (Glassmorphism & Custom Properties) · Vanilla JavaScript (ES6+) ·
 
 ## Kullanım
 
-Uygulama tek bir statik HTML dosyasından oluşur; kurulum veya derleme gerektirmez.
+Uygulama tek bir statik HTML dosyasından oluşur; ekstra bir kurulum veya sunucu gerektirmez.
 
 1. Bu repoyu klonlayın veya `index.html` dosyasını indirin
 2. Dosyayı doğrudan tarayıcınızda açın, ya da
