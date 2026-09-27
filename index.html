@@ -769,9 +769,13 @@
             }
         }
 
-        // Kısayollar
+        // Kısayollar ve Modal Kapatma
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            } else if (e.key === 'Enter') {
                 if (e.ctrlKey || e.metaKey) {
                     document.getElementById('start-btn').click();
                 } else if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'BUTTON') {
