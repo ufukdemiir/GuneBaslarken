@@ -23,7 +23,6 @@
     <meta property="og:description" content="Günlük hedeflerinizi belirleyin, zaman blokları oluşturun ve tamamen odaklanın. Minimalist görev planlayıcınız.">
     <meta property="og:url" content="https://ufukdemiir.github.io/">
     <meta property="og:site_name" content="Güne Başlarken">
-    <!-- Not: Sosyal medya paylaşımlarında görünecek resim için sitenize bir og-image.jpg yükleyip buraya linkini ekleyebilirsiniz -->
     <meta property="og:image" content="https://ufukdemiir.github.io/YapilacaklarListesi/og-image.jpg"> 
 
     <!-- Twitter Card Etiketleri -->
@@ -54,8 +53,13 @@
     }
     </script>
     
+    <!-- Google Arama Sonuçları İçin Statik Fallback Favicon -->
+    <!-- Not: GitHub reponuza favicon.ico ve favicon.png dosyalarını eklediğinizde Google bunları indeksleyecektir. -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+    
     <!-- Dinamik SVG Favicon (Varsayılan Renk: Turuncu #FF6B00) -->
-    <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23FF6B00'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
+    <link rel="icon" type="image/svg+xml" sizes="any" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23FF6B00'/><circle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2' opacity='0.35'/><path d='M16 9v7l4 3' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='16' cy='16' r='2' fill='white'/></svg>">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { corePlugins: { preflight: false } }</script>
@@ -402,6 +406,9 @@
             <button class="nav-btn" onclick="openModal('modal-howto')" title="Nasıl Kullanılır?">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             </button>
+            <button class="nav-btn" onclick="openModal('modal-disclaimer')" title="Veri Kaybı Sorumluluk Reddi">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </button>
             <button class="nav-btn" onclick="openModal('modal-social')" title="Uygulamalar & Bağlantılar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
             </button>
@@ -432,6 +439,28 @@
                     <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold shrink-0 mt-1">3</div>
                     <p class="text-gray-600 text-sm leading-relaxed"><strong>Şablonlarınızı Yönetin:</strong> Sürekli tekrar eden görev listelerinizi isim vererek kaydedin ve başka bir gün tek tıkla yükleyin.</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sorumluluk Reddi Modalı -->
+    <div id="modal-disclaimer" class="modal-overlay" onclick="closeModal(event, 'modal-disclaimer')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModalDirect('modal-disclaimer')">&times;</button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                </div>
+                <div>
+                    <h2 style="font-size:1.3rem; font-weight:700;" class="text-gray-900">Sorumluluk Reddi</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Gizlilik ve Veri Güvenliği</p>
+                </div>
+            </div>
+            <div class="text-sm text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <p> Tüm verileriniz sunucu bağlantısı olmaksızın <strong>tarayıcınızın yerel deposunda (localStorage)</strong> tutulur ve sayfa kapatıldığında korunur; <em>ancak önbellek temizliği kaynaklı kalıcı veri kayıpları tamamen kullanıcı sorumluluğundadır.</em></p>
+            </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="closeModalDirect('modal-disclaimer')" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gray-800 hover:bg-gray-900 shadow-md transition">Anladım</button>
             </div>
         </div>
     </div>
